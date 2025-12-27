@@ -1,5 +1,37 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Shop Collection",
+  description:
+    "Browse our complete collection of premium luxury hair care products. From nourishing oils to professional shampoos and conditioners - find the perfect products for your hair.",
+  keywords: [
+    "hair care products",
+    "luxury hair care collection",
+    "premium shampoo",
+    "hair oil",
+    "conditioner",
+    "styling products",
+    "professional hair care",
+  ],
+  openGraph: {
+    title: "Shop Our Collection | Bucci Products",
+    description:
+      "Browse our complete collection of premium luxury hair care products.",
+    type: "website",
+    url: "/products",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shop Our Collection | Bucci Products",
+    description:
+      "Browse our complete collection of premium luxury hair care products.",
+  },
+  alternates: {
+    canonical: "/products",
+  },
+};
 
 // Determine bottle type based on category for visual display
 function getBottleType(category: string | null): "serum" | "tall" | "wide" | "set" {

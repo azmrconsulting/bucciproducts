@@ -1,5 +1,12 @@
 import Link from "next/link";
 import { ArrowRight, Check, Star, Mail, Instagram, Send } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "/",
+  },
+};
 
 // Featured products data (will be replaced with database data later)
 const products = [
@@ -87,8 +94,32 @@ const testimonials = [
 ];
 
 export default function HomePage() {
+  // WebSite Schema for homepage
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://bucciproducts.com";
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Bucci Products",
+    url: baseUrl,
+    description:
+      "Premium luxury hair care products crafted with the finest ingredients.",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${baseUrl}/products?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <>
+      {/* JSON-LD Structured Data - WebSite Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
       {/* Hero Section */}
       <header className="min-h-screen grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden">
         {/* Background Gradient */}
