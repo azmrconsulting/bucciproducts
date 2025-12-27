@@ -103,7 +103,7 @@ export default function HomePage() {
         />
 
         {/* Hero Content */}
-        <div className="flex flex-col justify-center px-4 sm:px-8 lg:px-16 pt-24 pb-12 sm:pt-28 sm:pb-16 lg:py-16 relative z-[1] text-center lg:text-left items-center lg:items-start">
+        <div className="flex flex-col justify-center px-5 sm:px-8 lg:px-12 xl:px-16 pt-28 pb-12 sm:pt-32 sm:pb-16 lg:pt-24 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start">
           {/* Badge - Hidden on mobile to reduce clutter */}
           <div className="hidden sm:flex items-center gap-4 mb-8 animate-fadeInUp opacity-0 [animation-delay:0.2s]">
             <span className="w-10 h-[1px] bg-gold" />
@@ -142,7 +142,7 @@ export default function HomePage() {
         </div>
 
         {/* Hero Visual */}
-        <div className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black min-h-[50vh] sm:min-h-[60vh] lg:min-h-0 py-8 sm:py-0">
+        <div className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black min-h-[50vh] sm:min-h-[60vh] lg:min-h-0 py-8 sm:py-0 px-5 sm:px-8 lg:px-12">
           {/* Pulsing Circle - Hidden on small mobile */}
           <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] border border-gold/10 rounded-full animate-pulse" />
 
@@ -181,9 +181,9 @@ export default function HomePage() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gold/15 rounded-full blur-[60px] -z-10" />
           </div>
 
-          {/* Decorative Elements - Hidden on mobile */}
-          <div className="hidden sm:block absolute top-5 right-5 w-16 sm:w-20 h-16 sm:h-20 border border-gold/30 animate-fadeIn opacity-0 [animation-delay:1.5s]" />
-          <div className="hidden sm:block absolute bottom-10 left-10 w-[50px] sm:w-[60px] h-[50px] sm:h-[60px] border border-gold/30 rotate-45 animate-fadeIn opacity-0 [animation-delay:1.7s]" />
+          {/* Decorative Elements - Hidden on mobile, proper spacing from edges */}
+          <div className="hidden lg:block absolute top-12 right-12 xl:top-16 xl:right-16 w-16 lg:w-20 h-16 lg:h-20 border border-gold/30 animate-fadeIn opacity-0 [animation-delay:1.5s]" />
+          <div className="hidden lg:block absolute bottom-16 left-12 xl:left-16 w-[50px] lg:w-[60px] h-[50px] lg:h-[60px] border border-gold/30 rotate-45 animate-fadeIn opacity-0 [animation-delay:1.7s]" />
         </div>
 
         {/* Scroll Indicator - Hidden on mobile */}

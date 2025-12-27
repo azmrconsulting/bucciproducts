@@ -32,12 +32,12 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-400 ${
         isScrolled
-          ? "bg-black/95 backdrop-blur-[20px] py-2 border-b border-gold/10"
-          : "py-4"
+          ? "bg-black/95 backdrop-blur-[20px] py-3 border-b border-gold/10"
+          : "py-5 lg:py-6"
       }`}
       style={{ transitionTimingFunction: "var(--ease-out)" }}
     >
-      <nav className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      <nav className="max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex flex-col items-start flex-shrink-0">
           <span className="font-display text-xl sm:text-2xl font-semibold tracking-[0.2em] sm:tracking-[0.3em] text-gold leading-none">
