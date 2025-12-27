@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Check, Star, Truck, Shield, Leaf } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import AddToCartButton from "@/components/cart/AddToCartButton";
+import type { Metadata } from "next";
 
 // Determine bottle type based on category for visual display
 function getBottleType(category: string | null): "serum" | "tall" | "wide" | "set" {
@@ -23,6 +24,90 @@ function getBottleType(category: string | null): "serum" | "tall" | "wide" | "se
 
 interface PageProps {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    include: {
+      reviews: {
+        where: { isApproved: true },
+        select: { rating: true },
+      },
+    },
+  });
+
+  if (!product) {
+    return {
+      title: "Product Not Found | Bucci Products",
+      description: "The product you're looking for could not be found.",
+    };
+  }
+
+  const price = (product.priceCents / 100).toFixed(2);
+  const avgRating =
+    product.reviews.length > 0
+      ? (
+          product.reviews.reduce((acc, r) => acc + r.rating, 0) /
+          product.reviews.length
+        ).toFixed(1)
+      : null;
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://bucciproducts.com";
+  const productUrl = `${baseUrl}/products/${slug}`;
+
+  return {
+    title: `${product.name} | Bucci Products`,
+    description:
+      product.shortDescription ||
+      product.description?.substring(0, 160) ||
+      `Shop ${product.name} - Premium hair care products from Bucci Products.`,
+    keywords: [
+      product.name,
+      product.category || "hair care",
+      "luxury hair care",
+      "premium beauty",
+      "Bucci Products",
+      ...product.tags,
+    ],
+    alternates: {
+      canonical: productUrl,
+    },
+    openGraph: {
+      title: product.name,
+      description: product.shortDescription || product.description || "",
+      type: "website",
+      url: productUrl,
+      siteName: "Bucci Products",
+      locale: "en_US",
+      images: [
+        {
+          url: `${baseUrl}/og-product.jpg`, // Placeholder - will need actual product images
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description: product.shortDescription || product.description || "",
+      images: [`${baseUrl}/og-product.jpg`],
+    },
+    other: {
+      "product:price:amount": price,
+      "product:price:currency": "USD",
+      ...(avgRating && { "product:rating:value": avgRating }),
+      ...(product.reviews.length > 0 && {
+        "product:rating:count": product.reviews.length.toString(),
+      }),
+    },
+  };
 }
 
 export default async function ProductPage({ params }: PageProps) {
@@ -60,9 +145,108 @@ export default async function ProductPage({ params }: PageProps) {
         product.reviews.length
       : 0;
 
+  // Structured data for Product and Breadcrumb Schema
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://bucciproducts.com";
+
+  // Breadcrumb Schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: baseUrl,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: `${baseUrl}/products`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: `${baseUrl}/products/${product.slug}`,
+      },
+    ],
+  };
+
+  // Product Schema
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: `${baseUrl}/og-product.jpg`, // Placeholder
+    sku: product.id,
+    brand: {
+      "@type": "Brand",
+      name: "Bucci Products",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `${baseUrl}/products/${product.slug}`,
+      priceCurrency: "USD",
+      price: (product.priceCents / 100).toFixed(2),
+      availability: inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      priceValidUntil: new Date(
+        new Date().setFullYear(new Date().getFullYear() + 1)
+      )
+        .toISOString()
+        .split("T")[0],
+    },
+    ...(product.reviews.length > 0 && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: avgRating.toFixed(1),
+        reviewCount: product.reviews.length,
+        bestRating: "5",
+        worstRating: "1",
+      },
+    }),
+    ...(product.reviews.length > 0 && {
+      review: product.reviews.map((review) => ({
+        "@type": "Review",
+        reviewRating: {
+          "@type": "Rating",
+          ratingValue: review.rating.toString(),
+          bestRating: "5",
+          worstRating: "1",
+        },
+        author: {
+          "@type": "Person",
+          name:
+            review.user?.firstName && review.user?.lastName
+              ? `${review.user.firstName} ${review.user.lastName}`
+              : review.user?.firstName || "Anonymous",
+        },
+        ...(review.title && { headline: review.title }),
+        reviewBody: review.body,
+        datePublished: review.createdAt.toISOString(),
+      })),
+    }),
+  };
+
   return (
-    <main className="min-h-screen bg-charcoal pt-32">
-      <div className="section-container">
+    <>
+      {/* JSON-LD Structured Data - Product Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      {/* JSON-LD Structured Data - Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
+      <main className="min-h-screen bg-charcoal pt-32">
+        <div className="section-container">
         {/* Back Link */}
         <Link
           href="/products"
@@ -317,5 +501,6 @@ export default async function ProductPage({ params }: PageProps) {
         )}
       </div>
     </main>
+    </>
   );
 }
