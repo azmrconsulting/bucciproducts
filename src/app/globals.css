@@ -364,32 +364,38 @@ img {
 .section-container {
   max-width: 1600px;
   margin: 0 auto;
-  padding: 3rem 1.25rem;
+  padding: 3rem 1.5rem;
   position: relative;
   z-index: 1;
 }
 
 @media (min-width: 480px) {
   .section-container {
-    padding: 4rem 2rem;
+    padding: 4rem 2.5rem;
   }
 }
 
 @media (min-width: 768px) {
   .section-container {
-    padding: 5rem 2rem;
+    padding: 5rem 2.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .section-container {
-    padding: 6rem 3rem;
+    padding: 6rem 4rem;
   }
 }
 
 @media (min-width: 1280px) {
   .section-container {
-    padding: 6rem 4rem;
+    padding: 6rem 5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .section-container {
+    padding: 6rem 6rem;
   }
 }
 

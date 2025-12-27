@@ -37,7 +37,7 @@ export default function Header() {
       }`}
       style={{ transitionTimingFunction: "var(--ease-out)" }}
     >
-      <nav className="max-w-[1600px] mx-auto px-5 sm:px-8 lg:px-12 xl:px-16 flex items-center justify-between">
+      <nav className="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 xl:px-20 2xl:px-24 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex flex-col items-start flex-shrink-0">
           <span className="font-display text-xl sm:text-2xl font-semibold tracking-[0.2em] sm:tracking-[0.3em] text-gold leading-none">
