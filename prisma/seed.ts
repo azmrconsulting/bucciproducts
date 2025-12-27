@@ -164,23 +164,39 @@ async function main() {
     },
   });
 
-  // Create the Signature Set Bundle
-  const signatureSet = await prisma.bundle.create({
+  // Create the Signature Set as a Product (so it shows on product pages)
+  const signatureSet = await prisma.product.create({
     data: {
+      sku: "BUCCI-SET-001",
       name: "The Signature Set",
       slug: "signature-set",
+      shortDescription: "Complete hair care ritual with 4 premium products",
       description:
-        "Our complete hair care ritual. Includes Hydra Shampoo, Silk Conditioner, and Luxe Hair Oil—everything you need for salon-worthy results at home.",
-      priceCents: 11000,
-      compareAtPriceCents: 12200,
-      imageUrl: "/images/products/signature-set.jpg",
+        "Experience the full Bucci ritual. Our signature set combines all four products for a complete hair care system that cleanses, conditions, treats, and styles. Includes Hydra Shampoo (250ml), Silk Conditioner (250ml), Luxe Hair Oil (50ml), and Define Cream (100ml). Save $25 compared to buying individually.",
+      priceCents: 12900,
+      compareAtPriceCents: 15400,
+      category: "sets",
+      tags: ["bestseller", "bundle", "gift", "complete-care"],
       isActive: true,
-      items: {
+      isFeatured: true,
+      weightGrams: 1020,
+      images: {
         create: [
-          { productId: hydraShampoo.id, quantity: 1 },
-          { productId: silkConditioner.id, quantity: 1 },
-          { productId: luxeHairOil.id, quantity: 1 },
+          {
+            url: "/images/products/signature-set.jpg",
+            altText: "The Signature Set - Complete hair care collection",
+            position: 0,
+            isPrimary: true,
+          },
         ],
+      },
+      inventory: {
+        create: {
+          quantity: 50,
+          reservedQuantity: 0,
+          lowStockThreshold: 5,
+          allowBackorder: false,
+        },
       },
     },
   });
@@ -199,8 +215,7 @@ async function main() {
   });
 
   console.log("✅ Seeding complete!");
-  console.log(`   Created ${4} products`);
-  console.log(`   Created ${1} bundle (The Signature Set)`);
+  console.log(`   Created ${5} products (including The Signature Set)`);
   console.log(`   Created ${1} discount code (WELCOME15)`);
 }
 

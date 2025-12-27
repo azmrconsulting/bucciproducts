@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import AddToCartButton from "@/components/cart/AddToCartButton";
 
 // Determine bottle type based on category for visual display
-function getBottleType(category: string | null): "serum" | "tall" | "wide" {
+function getBottleType(category: string | null): "serum" | "tall" | "wide" | "set" {
   switch (category) {
     case "oils":
       return "serum";
@@ -14,6 +14,8 @@ function getBottleType(category: string | null): "serum" | "tall" | "wide" {
       return "tall";
     case "styling":
       return "wide";
+    case "sets":
+      return "set";
     default:
       return "tall";
   }
@@ -87,29 +89,66 @@ export default async function ProductPage({ params }: PageProps) {
                 </span>
               )}
 
-              {/* Placeholder Bottle - Larger version */}
-              <div className="flex flex-col items-center scale-[2]">
-                <div
-                  className={`w-[25px] h-[12px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px] ${
-                    bottleType === "tall" ? "relative" : ""
-                  }`}
-                >
-                  {bottleType === "tall" && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[5px] h-[15px] bg-gold rounded-[2px]" />
-                  )}
+              {/* Placeholder Bottle - Larger version (or set display) */}
+              {bottleType === "set" ? (
+                <div className="flex items-end justify-center gap-4 scale-[1.5]">
+                  {/* Bottle 1 - Tall */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-[20px] h-[10px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px] relative">
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-[4px] h-[12px] bg-gold rounded-[2px]" />
+                    </div>
+                    <div className="w-[32px] h-[85px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded flex items-center justify-center">
+                      <span className="font-display text-lg text-gold/60">B</span>
+                    </div>
+                  </div>
+                  {/* Bottle 2 - Tall */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-[20px] h-[10px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px] relative">
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-[4px] h-[12px] bg-gold rounded-[2px]" />
+                    </div>
+                    <div className="w-[32px] h-[85px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded flex items-center justify-center">
+                      <span className="font-display text-lg text-gold/60">B</span>
+                    </div>
+                  </div>
+                  {/* Bottle 3 - Serum */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-[20px] h-[10px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px]" />
+                    <div className="w-[36px] h-[65px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded flex items-center justify-center">
+                      <span className="font-display text-lg text-gold/60">B</span>
+                    </div>
+                  </div>
+                  {/* Bottle 4 - Wide */}
+                  <div className="flex flex-col items-center">
+                    <div className="w-[24px] h-[10px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px]" />
+                    <div className="w-[48px] h-[52px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-md flex items-center justify-center">
+                      <span className="font-display text-lg text-gold/60">B</span>
+                    </div>
+                  </div>
                 </div>
-                <div
-                  className={`bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 flex items-center justify-center ${
-                    bottleType === "serum"
-                      ? "w-[45px] h-[80px] rounded"
-                      : bottleType === "tall"
-                      ? "w-[40px] h-[110px] rounded"
-                      : "w-[60px] h-[65px] rounded-md"
-                  }`}
-                >
-                  <span className="font-display text-2xl text-gold/60">B</span>
+              ) : (
+                <div className="flex flex-col items-center scale-[2]">
+                  <div
+                    className={`w-[25px] h-[12px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px] ${
+                      bottleType === "tall" ? "relative" : ""
+                    }`}
+                  >
+                    {bottleType === "tall" && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[5px] h-[15px] bg-gold rounded-[2px]" />
+                    )}
+                  </div>
+                  <div
+                    className={`bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 flex items-center justify-center ${
+                      bottleType === "serum"
+                        ? "w-[45px] h-[80px] rounded"
+                        : bottleType === "tall"
+                        ? "w-[40px] h-[110px] rounded"
+                        : "w-[60px] h-[65px] rounded-md"
+                    }`}
+                  >
+                    <span className="font-display text-2xl text-gold/60">B</span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Glow Effect */}
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-gold/10 rounded-full blur-[80px] -z-10" />
