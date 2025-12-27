@@ -37,7 +37,9 @@ export default function Header() {
       }`}
       style={{ transitionTimingFunction: "var(--ease-out)" }}
     >
-      <nav className="max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 xl:px-20 2xl:px-24 flex items-center justify-between">
+      {/* Outer container for edge spacing */}
+      <div className="w-full" style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}>
+        <nav className="max-w-[1400px] mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex flex-col items-start flex-shrink-0">
           <span className="font-display text-xl sm:text-2xl font-semibold tracking-[0.2em] sm:tracking-[0.3em] text-gold leading-none">
@@ -103,6 +105,7 @@ export default function Header() {
           </button>
         </div>
       </nav>
+      </div>
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (

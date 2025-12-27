@@ -103,7 +103,10 @@ export default function HomePage() {
         />
 
         {/* Hero Content */}
-        <div className="flex flex-col justify-center px-6 sm:px-10 lg:px-16 xl:px-20 2xl:px-24 pt-28 pb-12 sm:pt-32 sm:pb-16 lg:pt-24 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start">
+        <div
+          className="flex flex-col justify-center pt-28 pb-12 sm:pt-32 sm:pb-16 lg:pt-24 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start"
+          style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}
+        >
           {/* Badge - Hidden on mobile to reduce clutter */}
           <div className="hidden sm:flex items-center gap-3 mb-8 animate-fadeInUp opacity-0 [animation-delay:0.2s]">
             <span className="w-8 h-[1px] bg-gold" />
@@ -142,7 +145,10 @@ export default function HomePage() {
         </div>
 
         {/* Hero Visual */}
-        <div className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black min-h-[50vh] sm:min-h-[60vh] lg:min-h-0 py-8 sm:py-0 px-6 sm:px-10 lg:px-16">
+        <div
+          className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black min-h-[50vh] sm:min-h-[60vh] lg:min-h-0 py-8 sm:py-0"
+          style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}
+        >
           {/* Pulsing Circle - Hidden on small mobile */}
           <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] border border-gold/10 rounded-full animate-pulse" />
 
