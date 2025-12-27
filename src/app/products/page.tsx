@@ -35,7 +35,7 @@ export default async function ProductsPage() {
   });
 
   return (
-    <main className="min-h-screen bg-charcoal pt-32">
+    <main className="min-h-screen bg-charcoal pt-24 sm:pt-32">
       {/* Page Header */}
       <div className="section-container">
         <div className="section-header">
@@ -52,7 +52,7 @@ export default async function ProductsPage() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           {products.map((product) => {
             const bottleType = getBottleType(product.category);
             const tag = getProductTag(product);
@@ -93,15 +93,15 @@ export default async function ProductsPage() {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-8">
-                  <h3 className="font-display text-xl font-medium mb-2 text-ivory">
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <h3 className="font-display text-lg sm:text-xl font-medium mb-2 text-ivory">
                     {product.name}
                   </h3>
-                  <p className="text-[0.9rem] text-gray mb-4 line-clamp-2">
+                  <p className="text-sm sm:text-[0.9rem] text-gray mb-3 sm:mb-4 line-clamp-2">
                     {product.shortDescription}
                   </p>
-                  <div className="flex justify-between items-center pt-4 border-t border-white/5">
-                    <span className="font-display text-xl text-gold">
+                  <div className="flex justify-between items-center pt-3 sm:pt-4 border-t border-white/5">
+                    <span className="font-display text-lg sm:text-xl text-gold">
                       ${price}
                     </span>
                     <Link

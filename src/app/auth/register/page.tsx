@@ -91,27 +91,27 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen bg-black flex items-center justify-center px-4 py-20">
+    <main className="min-h-screen bg-black flex items-center justify-center px-4 sm:px-6 py-12 sm:py-20">
       {/* Background Pattern */}
       <div className="geo-pattern" />
 
       <div className="w-full max-w-md relative z-10">
         {/* Logo */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 sm:mb-12">
           <Link href="/" className="inline-block">
-            <span className="font-display text-3xl font-semibold tracking-[0.3em] text-gold">
+            <span className="font-display text-2xl sm:text-3xl font-semibold tracking-[0.25em] sm:tracking-[0.3em] text-gold">
               BUCCI
             </span>
-            <span className="block font-display text-[0.65rem] tracking-[0.5em] text-ivory/60 mt-1">
+            <span className="block font-display text-[0.6rem] sm:text-[0.65rem] tracking-[0.4em] sm:tracking-[0.5em] text-ivory/60 mt-1">
               HAIR CARE
             </span>
           </Link>
         </div>
 
         {/* Register Card */}
-        <div className="card p-8 sm:p-10">
-          <div className="text-center mb-8">
-            <h1 className="font-display text-2xl text-ivory mb-2">
+        <div className="card p-5 sm:p-8 md:p-10">
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="font-display text-xl sm:text-2xl text-ivory mb-2">
               Create Account
             </h1>
             <p className="text-gray text-sm">
@@ -125,9 +125,9 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* Name Fields */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               <div className="form-group">
                 <label htmlFor="firstName" className="form-label">
                   First Name
@@ -252,7 +252,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn btn-primary w-full justify-center mt-8"
+              className="btn btn-primary w-full justify-center mt-6 sm:mt-8"
             >
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -266,7 +266,7 @@ export default function RegisterPage() {
           </form>
 
           {/* Divider */}
-          <div className="my-8 flex items-center gap-4">
+          <div className="my-6 sm:my-8 flex items-center gap-4">
             <div className="flex-1 h-px bg-white/10" />
             <span className="text-gray text-xs uppercase tracking-wider">or</span>
             <div className="flex-1 h-px bg-white/10" />
@@ -285,7 +285,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-center text-gray/50 text-xs">
+        <p className="mt-6 sm:mt-8 text-center text-gray/50 text-xs px-2">
           By creating an account, you agree to our{" "}
           <Link href="/terms" className="text-gray hover:text-ivory transition-colors">
             Terms of Service
