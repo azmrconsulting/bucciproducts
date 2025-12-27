@@ -103,9 +103,9 @@ export default function HomePage() {
         />
 
         {/* Hero Content */}
-        <div className="flex flex-col justify-center px-8 lg:px-16 py-32 lg:py-16 relative z-[1] text-center lg:text-left items-center lg:items-start">
-          {/* Badge */}
-          <div className="flex items-center gap-4 mb-8 animate-fadeInUp opacity-0 [animation-delay:0.2s]">
+        <div className="flex flex-col justify-center px-4 sm:px-8 lg:px-16 pt-24 pb-12 sm:pt-28 sm:pb-16 lg:py-16 relative z-[1] text-center lg:text-left items-center lg:items-start">
+          {/* Badge - Hidden on mobile to reduce clutter */}
+          <div className="hidden sm:flex items-center gap-4 mb-8 animate-fadeInUp opacity-0 [animation-delay:0.2s]">
             <span className="w-10 h-[1px] bg-gold" />
             <span className="font-display text-xs tracking-[0.3em] text-gold">
               LUXURY HAIR CARE
@@ -114,42 +114,42 @@ export default function HomePage() {
           </div>
 
           {/* Title */}
-          <h1 className="mb-8">
-            <span className="block font-display text-xl font-normal italic tracking-[0.2em] text-ivory/80 mb-2 animate-fadeInUp opacity-0 [animation-delay:0.4s]">
+          <h1 className="mb-6 sm:mb-8">
+            <span className="block font-display text-base sm:text-xl font-normal italic tracking-[0.15em] sm:tracking-[0.2em] text-ivory/80 mb-1 sm:mb-2 animate-fadeInUp opacity-0 [animation-delay:0.4s]">
               Elevate Your
             </span>
-            <span className="block font-display text-[clamp(3rem,8vw,6rem)] font-medium tracking-[0.02em] leading-none text-ivory animate-fadeInUp opacity-0 [animation-delay:0.6s]">
+            <span className="block font-display text-[clamp(2.5rem,10vw,6rem)] font-medium tracking-[0.02em] leading-none text-ivory animate-fadeInUp opacity-0 [animation-delay:0.6s]">
               Crown
             </span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg text-gray max-w-[400px] mb-12 animate-fadeInUp opacity-0 [animation-delay:0.8s]">
+          <p className="text-base sm:text-lg text-gray max-w-[400px] mb-8 sm:mb-12 px-2 sm:px-0 animate-fadeInUp opacity-0 [animation-delay:0.8s]">
             Premium hair care crafted for those who demand excellence. Nourish,
             style, and transform.
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto animate-fadeInUp opacity-0 [animation-delay:1s]">
-            <Link href="/products" className="btn btn-primary">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0 animate-fadeInUp opacity-0 [animation-delay:1s]">
+            <Link href="/products" className="btn btn-primary justify-center">
               <span>Explore Collection</span>
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <Link href="#about" className="btn btn-secondary">
+            <Link href="#about" className="btn btn-secondary justify-center">
               Our Story
             </Link>
           </div>
         </div>
 
         {/* Hero Visual */}
-        <div className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black min-h-[60vh] lg:min-h-0">
-          {/* Pulsing Circle */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-gold/10 rounded-full animate-pulse" />
+        <div className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black min-h-[50vh] sm:min-h-[60vh] lg:min-h-0 py-8 sm:py-0">
+          {/* Pulsing Circle - Hidden on small mobile */}
+          <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] border border-gold/10 rounded-full animate-pulse" />
 
           {/* Product Showcase */}
-          <div className="relative w-[350px] h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center">
-            {/* Bottles */}
-            <div className="flex items-end justify-center gap-8 p-10">
+          <div className="relative w-[280px] h-[320px] sm:w-[350px] sm:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center">
+            {/* Bottles - Scaled down on mobile */}
+            <div className="flex items-end justify-center gap-4 sm:gap-8 p-6 sm:p-10 scale-[0.85] sm:scale-100">
               {/* Bottle 1 */}
               <div className="flex flex-col items-center animate-fadeInUp opacity-0 [animation-delay:1.4s]">
                 <div className="w-[30px] h-[15px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px]" />
@@ -181,13 +181,13 @@ export default function HomePage() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gold/15 rounded-full blur-[60px] -z-10" />
           </div>
 
-          {/* Decorative Elements */}
-          <div className="absolute top-5 right-5 w-20 h-20 border border-gold/30 animate-fadeIn opacity-0 [animation-delay:1.5s]" />
-          <div className="absolute bottom-10 left-10 w-[60px] h-[60px] border border-gold/30 rotate-45 animate-fadeIn opacity-0 [animation-delay:1.7s]" />
+          {/* Decorative Elements - Hidden on mobile */}
+          <div className="hidden sm:block absolute top-5 right-5 w-16 sm:w-20 h-16 sm:h-20 border border-gold/30 animate-fadeIn opacity-0 [animation-delay:1.5s]" />
+          <div className="hidden sm:block absolute bottom-10 left-10 w-[50px] sm:w-[60px] h-[50px] sm:h-[60px] border border-gold/30 rotate-45 animate-fadeIn opacity-0 [animation-delay:1.7s]" />
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fadeIn opacity-0 [animation-delay:2.5s]">
+        {/* Scroll Indicator - Hidden on mobile */}
+        <div className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 animate-fadeIn opacity-0 [animation-delay:2.5s]">
           <span className="font-display text-[0.7rem] tracking-[0.2em] text-gray">
             Scroll
           </span>

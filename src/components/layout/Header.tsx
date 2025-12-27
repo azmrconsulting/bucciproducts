@@ -37,13 +37,13 @@ export default function Header() {
       }`}
       style={{ transitionTimingFunction: "var(--ease-out)" }}
     >
-      <nav className="max-w-[1400px] mx-auto px-8 flex items-center justify-between">
+      <nav className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex flex-col items-start">
-          <span className="font-display text-2xl font-semibold tracking-[0.3em] text-gold leading-none">
+        <Link href="/" className="flex flex-col items-start flex-shrink-0">
+          <span className="font-display text-xl sm:text-2xl font-semibold tracking-[0.2em] sm:tracking-[0.3em] text-gold leading-none">
             BUCCI
           </span>
-          <span className="font-display text-[0.6rem] tracking-[0.5em] text-ivory/70 mt-0.5">
+          <span className="font-display text-[0.5rem] sm:text-[0.6rem] tracking-[0.3em] sm:tracking-[0.5em] text-ivory/70 mt-0.5">
             HAIR CARE
           </span>
         </Link>
