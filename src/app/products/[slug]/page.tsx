@@ -1,0 +1,282 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, Check, Star, Truck, Shield, Leaf } from "lucide-react";
+import { prisma } from "@/lib/prisma";
+import AddToCartButton from "@/components/cart/AddToCartButton";
+
+// Determine bottle type based on category for visual display
+function getBottleType(category: string | null): "serum" | "tall" | "wide" {
+  switch (category) {
+    case "oils":
+      return "serum";
+    case "shampoo":
+    case "conditioner":
+      return "tall";
+    case "styling":
+      return "wide";
+    default:
+      return "tall";
+  }
+}
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export default async function ProductPage({ params }: PageProps) {
+  const { slug } = await params;
+
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    include: {
+      images: { orderBy: { position: "asc" } },
+      inventory: true,
+      reviews: {
+        where: { isApproved: true },
+        include: { user: { select: { firstName: true, lastName: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      },
+    },
+  });
+
+  if (!product) {
+    notFound();
+  }
+
+  const bottleType = getBottleType(product.category);
+  const price = (product.priceCents / 100).toFixed(0);
+  const comparePrice = product.compareAtPriceCents
+    ? (product.compareAtPriceCents / 100).toFixed(0)
+    : null;
+  const inStock = product.inventory ? product.inventory.quantity > 0 : true;
+
+  // Calculate average rating
+  const avgRating =
+    product.reviews.length > 0
+      ? product.reviews.reduce((acc, r) => acc + r.rating, 0) /
+        product.reviews.length
+      : 0;
+
+  return (
+    <main className="min-h-screen bg-charcoal pt-32">
+      <div className="section-container">
+        {/* Back Link */}
+        <Link
+          href="/products"
+          className="inline-flex items-center gap-2 text-gray hover:text-gold transition-colors mb-12"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span className="text-sm tracking-wide">Back to Collection</span>
+        </Link>
+
+        {/* Product Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+          {/* Product Image */}
+          <div className="relative">
+            <div className="aspect-square bg-gradient-to-br from-charcoal to-charcoal-light border border-gold/20 flex items-center justify-center sticky top-32">
+              {/* Tag */}
+              {product.tags.includes("bestseller") && (
+                <span className="absolute top-6 left-6 font-display text-[0.7rem] tracking-[0.15em] uppercase px-4 py-2 bg-gold text-black">
+                  Bestseller
+                </span>
+              )}
+              {product.tags.includes("new") && (
+                <span className="absolute top-6 left-6 font-display text-[0.7rem] tracking-[0.15em] uppercase px-4 py-2 bg-gold text-black">
+                  New
+                </span>
+              )}
+
+              {/* Placeholder Bottle - Larger version */}
+              <div className="flex flex-col items-center scale-[2]">
+                <div
+                  className={`w-[25px] h-[12px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px] ${
+                    bottleType === "tall" ? "relative" : ""
+                  }`}
+                >
+                  {bottleType === "tall" && (
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[5px] h-[15px] bg-gold rounded-[2px]" />
+                  )}
+                </div>
+                <div
+                  className={`bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 flex items-center justify-center ${
+                    bottleType === "serum"
+                      ? "w-[45px] h-[80px] rounded"
+                      : bottleType === "tall"
+                      ? "w-[40px] h-[110px] rounded"
+                      : "w-[60px] h-[65px] rounded-md"
+                  }`}
+                >
+                  <span className="font-display text-2xl text-gold/60">B</span>
+                </div>
+              </div>
+
+              {/* Glow Effect */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-gold/10 rounded-full blur-[80px] -z-10" />
+            </div>
+          </div>
+
+          {/* Product Info */}
+          <div className="flex flex-col">
+            {/* Category */}
+            <span className="font-display text-xs tracking-[0.3em] text-gold uppercase mb-4">
+              {product.category || "Hair Care"}
+            </span>
+
+            {/* Title */}
+            <h1 className="font-display text-4xl lg:text-5xl font-medium text-ivory mb-4">
+              {product.name}
+            </h1>
+
+            {/* Rating */}
+            {product.reviews.length > 0 && (
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Star
+                      key={star}
+                      className={`w-4 h-4 ${
+                        star <= avgRating
+                          ? "text-gold fill-gold"
+                          : "text-gray/30"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-gray">
+                  ({product.reviews.length} reviews)
+                </span>
+              </div>
+            )}
+
+            {/* Short Description */}
+            <p className="text-lg text-gray mb-8">{product.shortDescription}</p>
+
+            {/* Price */}
+            <div className="flex items-end gap-4 mb-8">
+              <span className="font-display text-4xl text-gold">${price}</span>
+              {comparePrice && (
+                <span className="font-display text-xl text-gray line-through mb-1">
+                  ${comparePrice}
+                </span>
+              )}
+            </div>
+
+            {/* Stock Status */}
+            <div className="flex items-center gap-2 mb-8">
+              <div
+                className={`w-2 h-2 rounded-full ${
+                  inStock ? "bg-green-500" : "bg-red-500"
+                }`}
+              />
+              <span className="text-sm text-gray">
+                {inStock ? "In Stock" : "Out of Stock"}
+              </span>
+            </div>
+
+            {/* Add to Cart Button */}
+            <AddToCartButton
+              product={{
+                id: product.id,
+                name: product.name,
+                slug: product.slug,
+                priceCents: product.priceCents,
+                category: product.category,
+              }}
+              disabled={!inStock}
+              className="mb-8"
+            />
+
+            {/* Features */}
+            <div className="grid grid-cols-3 gap-4 py-8 border-y border-white/10">
+              <div className="flex flex-col items-center text-center gap-2">
+                <Truck className="w-5 h-5 text-gold" />
+                <span className="text-xs text-gray">Free Shipping $75+</span>
+              </div>
+              <div className="flex flex-col items-center text-center gap-2">
+                <Shield className="w-5 h-5 text-gold" />
+                <span className="text-xs text-gray">30-Day Returns</span>
+              </div>
+              <div className="flex flex-col items-center text-center gap-2">
+                <Leaf className="w-5 h-5 text-gold" />
+                <span className="text-xs text-gray">Clean Formula</span>
+              </div>
+            </div>
+
+            {/* Full Description */}
+            <div className="py-8">
+              <h2 className="font-display text-lg font-medium text-ivory mb-4">
+                About This Product
+              </h2>
+              <p className="text-gray leading-relaxed">{product.description}</p>
+            </div>
+
+            {/* Benefits */}
+            <div className="py-8 border-t border-white/10">
+              <h2 className="font-display text-lg font-medium text-ivory mb-4">
+                Benefits
+              </h2>
+              <ul className="space-y-3">
+                {[
+                  "Sulfate-free & paraben-free formula",
+                  "Suitable for all hair types",
+                  "Cruelty-free & vegan",
+                  "Professional salon quality",
+                ].map((benefit) => (
+                  <li key={benefit} className="flex items-center gap-3 text-gray">
+                    <Check className="w-4 h-4 text-gold flex-shrink-0" />
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Reviews Section */}
+        {product.reviews.length > 0 && (
+          <section className="mt-24 pt-16 border-t border-white/10">
+            <h2 className="font-display text-2xl font-medium text-ivory mb-12">
+              Customer Reviews
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {product.reviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="bg-charcoal-light border border-white/5 p-8"
+                >
+                  <div className="flex gap-1 mb-4">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`w-4 h-4 ${
+                          star <= review.rating
+                            ? "text-gold fill-gold"
+                            : "text-gray/30"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  {review.title && (
+                    <h3 className="font-display font-medium text-ivory mb-2">
+                      {review.title}
+                    </h3>
+                  )}
+                  <p className="text-gray text-sm mb-4">{review.body}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-ivory">
+                      {review.user?.firstName || "Anonymous"}
+                    </span>
+                    {review.isVerifiedPurchase && (
+                      <span className="text-xs text-gold">Verified Buyer</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </main>
+  );
+}
