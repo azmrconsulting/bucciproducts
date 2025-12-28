@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Plus, Search } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 async function getProducts(search?: string) {
   const where: any = {};
 

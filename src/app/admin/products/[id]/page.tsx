@@ -4,6 +4,8 @@ import ProductForm from '@/components/admin/ProductForm';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 async function getProduct(id: string) {
   const product = await prisma.product.findUnique({
     where: { id },

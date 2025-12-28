@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { ArrowLeft, Mail, Phone, Calendar, ShoppingBag } from 'lucide-react';
 import UserRoleUpdate from '@/components/admin/UserRoleUpdate';
 
+export const dynamic = 'force-dynamic';
+
 async function getUser(id: string) {
   const user = await prisma.user.findUnique({
     where: { id },

@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma';
 import { DollarSign, ShoppingCart, Package, Users, TrendingUp, AlertTriangle, ArrowUpRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 async function getDashboardStats() {
   const [
     totalOrders,

@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { Search, AlertCircle } from 'lucide-react';
 import InventoryUpdateForm from '@/components/admin/InventoryUpdateForm';
 
+export const dynamic = 'force-dynamic';
+
 async function getInventory(search?: string) {
   const where: any = {};
 

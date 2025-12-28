@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Plus, Search } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 async function getDiscountCodes() {
   const discountCodes = await prisma.discountCode.findMany({
     include: {

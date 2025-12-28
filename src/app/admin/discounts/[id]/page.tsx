@@ -4,6 +4,8 @@ import DiscountCodeForm from '@/components/admin/DiscountCodeForm';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 async function getDiscountCode(id: string) {
   const discountCode = await prisma.discountCode.findUnique({
     where: { id },
