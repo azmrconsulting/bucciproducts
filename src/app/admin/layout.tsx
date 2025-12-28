@@ -1,9 +1,9 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
 import {
   LayoutDashboard,
   Package,
@@ -32,8 +32,17 @@ export default function AdminLayout({
 }) {
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const router = useRouter();
 
-  if (status === 'loading') {
+  useEffect(() => {
+    if (status !== 'loading') {
+      if (!session || (session.user as any)?.role !== 'ADMIN') {
+        router.replace('/auth/login?callbackUrl=/admin');
+      }
+    }
+  }, [session, status, router]);
+
+  if (status === 'loading' || !session || (session.user as any)?.role !== 'ADMIN') {
     return (
       <div className="admin-wrapper" style={{ alignItems: 'center', justifyContent: 'center' }}>
         <div className="admin-loading">
@@ -42,10 +51,6 @@ export default function AdminLayout({
         </div>
       </div>
     );
-  }
-
-  if (!session || (session.user as any)?.role !== 'ADMIN') {
-    redirect('/auth/login?callbackUrl=/admin');
   }
 
   const isActiveRoute = (href: string) => {
