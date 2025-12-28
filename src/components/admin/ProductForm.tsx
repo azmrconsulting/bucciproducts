@@ -43,17 +43,17 @@ export default function ProductForm({ product }: { product?: any }) {
     name: product?.name || '',
     slug: product?.slug || '',
     description: product?.description || '',
-    price: product?.price ? (product.priceCents / 100).toFixed(2) : '',
-    compareAtPrice: product?.compareAtPrice ? (product.compareAtPriceCents / 100).toFixed(2) : '',
-    cost: product?.cost ? (product.costCents / 100).toFixed(2) : '',
+    price: product?.priceCents ? (product.priceCents / 100).toFixed(2) : '',
+    compareAtPrice: product?.compareAtPriceCents ? (product.compareAtPriceCents / 100).toFixed(2) : '',
+    cost: product?.costCents ? (product.costCents / 100).toFixed(2) : '',
     category: product?.category || '',
     tags: product?.tags?.join(', ') || '',
-    featured: product?.featured || false,
-    active: product?.active !== false,
-    weight: product?.weight?.toString() || '',
+    featured: product?.isFeatured || false,
+    active: product?.isActive !== false,
+    weight: product?.weightGrams ? (product.weightGrams / 28.3495).toFixed(2) : '',
     inventory: {
-      available: product?.inventory?.available?.toString() || '0',
-      reserved: product?.inventory?.reserved?.toString() || '0',
+      available: product?.inventory?.quantity?.toString() || '0',
+      reserved: product?.inventory?.reservedQuantity?.toString() || '0',
       allowBackorder: product?.inventory?.allowBackorder || false,
     },
   });
@@ -101,21 +101,21 @@ export default function ProductForm({ product }: { product?: any }) {
         name: formData.name,
         slug: formData.slug,
         description: formData.description,
-        price: Math.round(parseFloat(formData.price) * 100),
-        compareAtPrice: formData.compareAtPrice
+        priceCents: Math.round(parseFloat(formData.price) * 100),
+        compareAtPriceCents: formData.compareAtPrice
           ? Math.round(parseFloat(formData.compareAtPrice) * 100)
           : null,
-        cost: formData.cost ? Math.round(parseFloat(formData.cost) * 100) : null,
+        costCents: formData.cost ? Math.round(parseFloat(formData.cost) * 100) : null,
         category: formData.category || null,
         tags: formData.tags
           ? formData.tags.split(',').map((tag) => tag.trim()).filter(Boolean)
           : [],
-        featured: formData.featured,
-        active: formData.active,
-        weight: formData.weight ? parseFloat(formData.weight) : null,
+        isFeatured: formData.featured,
+        isActive: formData.active,
+        weightGrams: formData.weight ? Math.round(parseFloat(formData.weight) * 28.3495) : null,
         inventory: {
-          available: parseInt(formData.inventory?.available || '0'),
-          reserved: parseInt(formData.inventory?.reserved || '0'),
+          quantity: parseInt(formData.inventory?.available || '0'),
+          reservedQuantity: parseInt(formData.inventory?.reserved || '0'),
           allowBackorder: formData.inventory?.allowBackorder || false,
         },
       };
