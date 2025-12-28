@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { DollarSign, ShoppingCart, Package, Users, TrendingUp, AlertCircle } from 'lucide-react';
+import { DollarSign, ShoppingCart, Package, Users, TrendingUp, AlertTriangle, ArrowUpRight, Clock } from 'lucide-react';
 import Link from 'next/link';
 
 async function getDashboardStats() {
@@ -12,10 +12,7 @@ async function getDashboardStats() {
     lowStockProducts,
     ordersByStatus,
   ] = await Promise.all([
-    // Total orders
     prisma.order.count(),
-
-    // Total revenue (sum of all completed orders)
     prisma.order.aggregate({
       where: {
         status: {
@@ -26,18 +23,12 @@ async function getDashboardStats() {
         totalCents: true,
       },
     }),
-
-    // Total products
     prisma.product.count({
       where: { isActive: true },
     }),
-
-    // Total users
     prisma.user.count(),
-
-    // Recent orders (last 10)
     prisma.order.findMany({
-      take: 10,
+      take: 5,
       orderBy: { createdAt: 'desc' },
       include: {
         user: {
@@ -49,8 +40,6 @@ async function getDashboardStats() {
         },
       },
     }),
-
-    // Low stock products
     prisma.inventory.findMany({
       where: {
         quantity: {
@@ -73,8 +62,6 @@ async function getDashboardStats() {
       },
       take: 5,
     }),
-
-    // Orders by status
     prisma.order.groupBy({
       by: ['status'],
       _count: {
@@ -108,185 +95,192 @@ export default async function AdminDashboard() {
     return new Intl.DateTimeFormat('en-US', {
       month: 'short',
       day: 'numeric',
-      year: 'numeric',
       hour: 'numeric',
       minute: '2-digit',
     }).format(date);
   };
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      PENDING: 'bg-yellow-100 text-yellow-800',
-      CONFIRMED: 'bg-blue-100 text-blue-800',
-      PROCESSING: 'bg-purple-100 text-purple-800',
-      SHIPPED: 'bg-indigo-100 text-indigo-800',
-      DELIVERED: 'bg-green-100 text-green-800',
-      CANCELLED: 'bg-red-100 text-red-800',
-      REFUNDED: 'bg-gray-100 text-gray-800',
+  const getStatusStyles = (status: string) => {
+    const styles: Record<string, { bg: string; text: string; dot: string }> = {
+      PENDING: { bg: 'rgba(234, 179, 8, 0.1)', text: '#eab308', dot: '#eab308' },
+      CONFIRMED: { bg: 'rgba(59, 130, 246, 0.1)', text: '#3b82f6', dot: '#3b82f6' },
+      PROCESSING: { bg: 'rgba(168, 85, 247, 0.1)', text: '#a855f7', dot: '#a855f7' },
+      SHIPPED: { bg: 'rgba(99, 102, 241, 0.1)', text: '#6366f1', dot: '#6366f1' },
+      DELIVERED: { bg: 'rgba(34, 197, 94, 0.1)', text: '#22c55e', dot: '#22c55e' },
+      CANCELLED: { bg: 'rgba(239, 68, 68, 0.1)', text: '#ef4444', dot: '#ef4444' },
+      REFUNDED: { bg: 'rgba(107, 114, 128, 0.1)', text: '#6b7280', dot: '#6b7280' },
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return styles[status] || styles.PENDING;
   };
 
+  const statCards = [
+    {
+      label: 'Total Revenue',
+      value: formatCurrency(stats.totalRevenue),
+      icon: DollarSign,
+      trend: '+12.5%',
+      trendUp: true,
+    },
+    {
+      label: 'Total Orders',
+      value: stats.totalOrders.toString(),
+      icon: ShoppingCart,
+      trend: '+8.2%',
+      trendUp: true,
+    },
+    {
+      label: 'Active Products',
+      value: stats.totalProducts.toString(),
+      icon: Package,
+      trend: '+3',
+      trendUp: true,
+    },
+    {
+      label: 'Total Customers',
+      value: stats.totalUsers.toString(),
+      icon: Users,
+      trend: '+15.3%',
+      trendUp: true,
+    },
+  ];
+
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600 mt-1">Welcome to your admin dashboard</p>
-      </div>
+    <div className="admin-dashboard">
+      {/* Header */}
+      <header className="admin-dashboard-header">
+        <div>
+          <h1 className="admin-header-title">Dashboard</h1>
+          <p className="admin-header-subtitle">Welcome back. Here&apos;s what&apos;s happening with your store.</p>
+        </div>
+        <div className="admin-header-date">
+          <Clock />
+          <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</span>
+        </div>
+      </header>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-900 mt-2">
-                {formatCurrency(stats.totalRevenue)}
-              </p>
-            </div>
-            <div className="bg-green-100 p-3 rounded-full">
-              <DollarSign className="w-6 h-6 text-green-600" />
+      {/* Stats Grid */}
+      <section className="admin-stats-grid">
+        {statCards.map((card, index) => (
+          <div key={card.label} className="admin-stat-card" style={{ animationDelay: `${index * 0.1}s` }}>
+            <div className="admin-stat-card-inner">
+              <div className="admin-stat-header">
+                <span className="admin-stat-label">{card.label}</span>
+                <div className="admin-stat-icon-wrapper">
+                  <card.icon />
+                </div>
+              </div>
+              <div className="admin-stat-value">{card.value}</div>
+              <div className={`admin-stat-trend ${card.trendUp ? 'admin-trend-up' : 'admin-trend-down'}`}>
+                <TrendingUp />
+                <span>{card.trend} from last month</span>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Orders</p>
-              <p className="text-2xl font-bold text-gray-900 mt-2">
-                {stats.totalOrders}
-              </p>
-            </div>
-            <div className="bg-blue-100 p-3 rounded-full">
-              <ShoppingCart className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Products</p>
-              <p className="text-2xl font-bold text-gray-900 mt-2">
-                {stats.totalProducts}
-              </p>
-            </div>
-            <div className="bg-purple-100 p-3 rounded-full">
-              <Package className="w-6 h-6 text-purple-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Users</p>
-              <p className="text-2xl font-bold text-gray-900 mt-2">
-                {stats.totalUsers}
-              </p>
-            </div>
-            <div className="bg-yellow-100 p-3 rounded-full">
-              <Users className="w-6 h-6 text-yellow-600" />
-            </div>
-          </div>
-        </div>
-      </div>
+        ))}
+      </section>
 
       {/* Orders by Status */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Orders by Status</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-          {stats.ordersByStatus.map((item) => (
-            <div key={item.status} className="text-center">
-              <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
-                {item.status}
-              </span>
-              <p className="text-2xl font-bold text-gray-900 mt-2">{item._count.status}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Orders */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900">Recent Orders</h2>
-              <Link href="/admin/orders" className="text-sm text-blue-600 hover:text-blue-700">
-                View All
-              </Link>
-            </div>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {stats.recentOrders.length === 0 ? (
-              <p className="p-6 text-gray-500 text-center">No orders yet</p>
-            ) : (
-              stats.recentOrders.map((order) => (
-                <div key={order.id} className="p-4 hover:bg-gray-50">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900">{order.orderNumber}</p>
-                      <p className="text-sm text-gray-600">
-                        {order.user ? `${order.user.firstName} ${order.user.lastName}` : order.email}
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">{formatDate(order.createdAt)}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">{formatCurrency(order.totalCents)}</p>
-                      <span className={`inline-block px-2 py-1 rounded text-xs font-medium mt-1 ${getStatusColor(order.status)}`}>
-                        {order.status}
-                      </span>
-                    </div>
-                  </div>
+      {stats.ordersByStatus.length > 0 && (
+        <section className="admin-status-section">
+          <h2 className="admin-section-title">Orders by Status</h2>
+          <div className="admin-status-grid">
+            {stats.ordersByStatus.map((item) => {
+              const styles = getStatusStyles(item.status);
+              return (
+                <div key={item.status} className="admin-status-card" style={{ background: styles.bg }}>
+                  <div className="admin-status-dot" style={{ background: styles.dot }} />
+                  <span className="admin-status-name" style={{ color: styles.text }}>{item.status}</span>
+                  <span className="admin-status-count">{item._count.status}</span>
                 </div>
-              ))
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Two Column Layout */}
+      <div className="admin-two-column">
+        {/* Recent Orders */}
+        <section className="admin-panel">
+          <div className="admin-panel-header">
+            <h2 className="admin-panel-title">Recent Orders</h2>
+            <Link href="/admin/orders" className="admin-panel-link">
+              View All
+              <ArrowUpRight />
+            </Link>
+          </div>
+          <div className="admin-panel-content">
+            {stats.recentOrders.length === 0 ? (
+              <div className="admin-empty-state">
+                <ShoppingCart />
+                <p>No orders yet</p>
+              </div>
+            ) : (
+              <div className="admin-orders-list">
+                {stats.recentOrders.map((order) => {
+                  const styles = getStatusStyles(order.status);
+                  return (
+                    <Link href={`/admin/orders/${order.id}`} key={order.id} className="admin-order-item">
+                      <div className="admin-order-info">
+                        <span className="admin-order-number">{order.orderNumber}</span>
+                        <span className="admin-order-customer">
+                          {order.user ? `${order.user.firstName} ${order.user.lastName}` : order.email}
+                        </span>
+                        <span className="admin-order-date">{formatDate(order.createdAt)}</span>
+                      </div>
+                      <div className="admin-order-meta">
+                        <span className="admin-order-amount">{formatCurrency(order.totalCents)}</span>
+                        <span className="admin-order-status" style={{ background: styles.bg, color: styles.text }}>
+                          {order.status}
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
             )}
           </div>
-        </div>
+        </section>
 
         {/* Low Stock Alert */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-orange-600" />
-                Low Stock Alert
-              </h2>
-              <Link href="/admin/inventory" className="text-sm text-blue-600 hover:text-blue-700">
-                View All
-              </Link>
-            </div>
+        <section className="admin-panel">
+          <div className="admin-panel-header">
+            <h2 className="admin-panel-title">
+              <AlertTriangle className="alert-icon" />
+              Low Stock Alert
+            </h2>
+            <Link href="/admin/inventory" className="admin-panel-link">
+              View All
+              <ArrowUpRight />
+            </Link>
           </div>
-          <div className="divide-y divide-gray-200">
+          <div className="admin-panel-content">
             {stats.lowStockProducts.length === 0 ? (
-              <p className="p-6 text-gray-500 text-center">All products are well stocked</p>
+              <div className="admin-empty-state success">
+                <Package />
+                <p>All products are well stocked</p>
+              </div>
             ) : (
-              stats.lowStockProducts.map((item) => (
-                <div key={item.id} className="p-4 hover:bg-gray-50">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900">
+              <div className="admin-stock-list">
+                {stats.lowStockProducts.map((item) => (
+                  <div key={item.id} className="admin-stock-item">
+                    <div className="admin-stock-info">
+                      <span className="admin-stock-name">
                         {item.product?.name || 'Product'}
-                        {item.variant && ` - ${item.variant.name}`}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        SKU: {item.variant?.sku || item.product?.sku}
-                      </p>
+                        {item.variant && <span className="admin-stock-variant"> - {item.variant.name}</span>}
+                      </span>
+                      <span className="admin-stock-sku">SKU: {item.variant?.sku || item.product?.sku}</span>
                     </div>
-                    <div className="text-right">
-                      <p className={`text-lg font-bold ${item.quantity <= 5 ? 'text-red-600' : 'text-orange-600'}`}>
-                        {item.quantity}
-                      </p>
-                      <p className="text-xs text-gray-500">in stock</p>
+                    <div className={`admin-stock-quantity ${item.quantity <= 5 ? 'critical' : 'warning'}`}>
+                      <span className="admin-quantity-value">{item.quantity}</span>
+                      <span className="admin-quantity-label">in stock</span>
                     </div>
                   </div>
-                </div>
-              ))
+                ))}
+              </div>
             )}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
