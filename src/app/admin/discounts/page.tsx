@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
-import { Plus, Search } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,100 +58,64 @@ export default async function DiscountsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div>
+      {/* Page Header */}
+      <div className="admin-page-header">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Discount Codes</h1>
-          <p className="text-gray-600 mt-1">{discountCodes.length} total discount codes</p>
+          <h1 className="admin-page-title">Discount Codes</h1>
+          <p className="admin-page-subtitle">{discountCodes.length} total discount codes</p>
         </div>
-        <Link
-          href="/admin/discounts/new"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-        >
-          <Plus className="w-5 h-5" />
+        <Link href="/admin/discounts/new" className="admin-btn admin-btn-primary">
+          <Plus />
           Create Discount Code
         </Link>
       </div>
 
       {/* Discount Codes Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+      <div className="admin-card">
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Code
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Value
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Min Order
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Usage
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Valid Until
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th>Code</th>
+                <th>Type</th>
+                <th>Value</th>
+                <th>Min Order</th>
+                <th>Usage</th>
+                <th>Valid Until</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody>
               {discountCodes.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
-                    No discount codes found
-                    <Link
-                      href="/admin/discounts/new"
-                      className="block mt-4 text-blue-600 hover:text-blue-700 font-medium"
-                    >
+                  <td colSpan={8} className="admin-table-empty">
+                    <p>No discount codes found</p>
+                    <Link href="/admin/discounts/new" className="admin-td-link" style={{ marginTop: '1rem', display: 'inline-block' }}>
                       Create your first discount code
                     </Link>
                   </td>
                 </tr>
               ) : (
                 discountCodes.map((code) => (
-                  <tr key={code.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{code.code}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {code.type.replace('_', ' ')}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {getDiscountValue(code)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {code.minimumOrderCents ? formatCurrency(code.minimumOrderCents) : 'None'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <tr key={code.id}>
+                    <td className="admin-td-primary">{code.code}</td>
+                    <td>{code.type.replace('_', ' ')}</td>
+                    <td className="admin-td-gold">{getDiscountValue(code)}</td>
+                    <td>{code.minimumOrderCents ? formatCurrency(code.minimumOrderCents) : 'None'}</td>
+                    <td>
                       {code._count.orders}
                       {code.maxUses ? ` / ${code.maxUses}` : ' / ∞'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(code.expiresAt)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        isActive(code) ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                      }`}>
+                    <td>{formatDate(code.expiresAt)}</td>
+                    <td>
+                      <span className={`admin-badge ${isActive(code) ? 'admin-badge-active' : 'admin-badge-inactive'}`}>
                         {isActive(code) ? 'Active' : 'Inactive'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <Link
-                        href={`/admin/discounts/${code.id}`}
-                        className="text-blue-600 hover:text-blue-900 font-medium"
-                      >
+                    <td>
+                      <Link href={`/admin/discounts/${code.id}`} className="admin-td-link">
                         Edit
                       </Link>
                     </td>

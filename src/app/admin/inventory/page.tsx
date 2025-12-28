@@ -1,5 +1,4 @@
 import { prisma } from '@/lib/prisma';
-import Link from 'next/link';
 import { Search, AlertCircle } from 'lucide-react';
 import InventoryUpdateForm from '@/components/admin/InventoryUpdateForm';
 
@@ -61,158 +60,120 @@ export default async function InventoryPage({
 }) {
   const inventory = await getInventory(searchParams.search);
 
-  const lowStockCount = inventory.filter((item) => item.quantity <= 10).length;
+  const lowStockCount = inventory.filter((item) => item.quantity <= 10 && item.quantity > 0).length;
   const outOfStockCount = inventory.filter((item) => item.quantity === 0).length;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div>
+      {/* Page Header */}
+      <div className="admin-page-header">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Inventory Management</h1>
-          <p className="text-gray-600 mt-1">{inventory.length} total items tracked</p>
+          <h1 className="admin-page-title">Inventory Management</h1>
+          <p className="admin-page-subtitle">{inventory.length} total items tracked</p>
         </div>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Items</p>
-              <p className="text-2xl font-bold text-gray-900 mt-2">{inventory.length}</p>
-            </div>
+      <div className="admin-grid-3" style={{ marginBottom: '1.5rem' }}>
+        <div className="admin-stat-small">
+          <div className="admin-stat-small-header">
+            <span className="admin-stat-small-label">Total Items</span>
           </div>
+          <div className="admin-stat-small-value">{inventory.length}</div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Low Stock</p>
-              <p className="text-2xl font-bold text-orange-600 mt-2">{lowStockCount}</p>
-            </div>
-            <div className="bg-orange-100 p-3 rounded-full">
-              <AlertCircle className="w-6 h-6 text-orange-600" />
+        <div className="admin-stat-small">
+          <div className="admin-stat-small-header">
+            <span className="admin-stat-small-label">Low Stock</span>
+            <div className="admin-stat-small-icon orange">
+              <AlertCircle />
             </div>
           </div>
+          <div className="admin-stat-small-value orange">{lowStockCount}</div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Out of Stock</p>
-              <p className="text-2xl font-bold text-red-600 mt-2">{outOfStockCount}</p>
-            </div>
-            <div className="bg-red-100 p-3 rounded-full">
-              <AlertCircle className="w-6 h-6 text-red-600" />
+        <div className="admin-stat-small">
+          <div className="admin-stat-small-header">
+            <span className="admin-stat-small-label">Out of Stock</span>
+            <div className="admin-stat-small-icon red">
+              <AlertCircle />
             </div>
           </div>
+          <div className="admin-stat-small-value red">{outOfStockCount}</div>
         </div>
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-lg shadow p-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search by product name or SKU..."
-            defaultValue={searchParams.search}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
+      <div className="admin-search">
+        <Search />
+        <input
+          type="text"
+          placeholder="Search by product name or SKU..."
+          defaultValue={searchParams.search}
+        />
       </div>
 
       {/* Inventory Table */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+      <div className="admin-card">
+        <div className="admin-table-container">
+          <table className="admin-table">
+            <thead>
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Product
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  SKU
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Available
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Reserved
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Total
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Backorder
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th>Product</th>
+                <th>SKU</th>
+                <th>Available</th>
+                <th>Reserved</th>
+                <th>Total</th>
+                <th>Backorder</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody>
               {inventory.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={8} className="admin-table-empty">
                     No inventory found
                   </td>
                 </tr>
               ) : (
                 inventory.map((item) => {
                   const total = item.quantity + item.reservedQuantity;
-                  const stockStatus = item.quantity === 0 ? 'out' : item.quantity <= 10 ? 'low' : 'good';
+                  const stockStatus = item.quantity === 0 ? 'out' : item.quantity <= 10 ? 'low' : 'instock';
 
                   return (
-                    <tr key={item.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">
+                    <tr key={item.id}>
+                      <td>
+                        <div className="admin-td-primary">
                           {item.product?.name || 'Unknown'}
                           {item.variant && (
-                            <span className="text-gray-500"> - {item.variant.name}</span>
+                            <span style={{ color: '#888' }}> - {item.variant.name}</span>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="admin-td-secondary">
                         {item.variant?.sku || item.product?.sku || 'N/A'}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`text-sm font-semibold ${
-                          stockStatus === 'out' ? 'text-red-600' :
-                          stockStatus === 'low' ? 'text-orange-600' :
-                          'text-green-600'
-                        }`}>
+                      <td>
+                        <span className={`admin-td-${stockStatus === 'out' ? 'gold' : stockStatus === 'low' ? 'gold' : 'primary'}`} style={{ color: stockStatus === 'out' ? '#ef4444' : stockStatus === 'low' ? '#f97316' : '#22c55e' }}>
                           {item.quantity}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {item.reservedQuantity}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
-                        {total}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          item.allowBackorder ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800'
-                        }`}>
+                      <td>{item.reservedQuantity}</td>
+                      <td className="admin-td-primary">{total}</td>
+                      <td>
+                        <span className={`admin-badge ${item.allowBackorder ? 'admin-badge-confirmed' : 'admin-badge-inactive'}`}>
                           {item.allowBackorder ? 'Allowed' : 'Not Allowed'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          stockStatus === 'out' ? 'bg-red-100 text-red-800' :
-                          stockStatus === 'low' ? 'bg-orange-100 text-orange-800' :
-                          'bg-green-100 text-green-800'
-                        }`}>
+                      <td>
+                        <span className={`admin-badge admin-badge-${stockStatus}`}>
                           {stockStatus === 'out' ? 'Out of Stock' :
                            stockStatus === 'low' ? 'Low Stock' :
                            'In Stock'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <td>
                         <InventoryUpdateForm inventory={item} />
                       </td>
                     </tr>
