@@ -60,20 +60,20 @@ export default function OrderStatusUpdate({ order }: { order: Order }) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900">Update Order</h2>
+    <div className="admin-card">
+      <div className="admin-card-header">
+        <h2 className="admin-card-title">Update Order</h2>
       </div>
-      <form onSubmit={handleSubmit} className="p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="admin-card-body space-y-4">
         <div>
-          <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="status" className="admin-form-label">
             Order Status
           </label>
           <select
             id="status"
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="admin-form-select"
           >
             {ORDER_STATUSES.map((s) => (
               <option key={s} value={s}>
@@ -84,7 +84,7 @@ export default function OrderStatusUpdate({ order }: { order: Order }) {
         </div>
 
         <div>
-          <label htmlFor="trackingNumber" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="trackingNumber" className="admin-form-label">
             Tracking Number
           </label>
           <input
@@ -93,27 +93,27 @@ export default function OrderStatusUpdate({ order }: { order: Order }) {
             value={trackingNumber}
             onChange={(e) => setTrackingNumber(e.target.value)}
             placeholder="Enter tracking number"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="admin-form-input"
           />
-          <p className="text-xs text-gray-500 mt-1">Optional - Add when order is shipped</p>
+          <p className="text-xs text-gray mt-1">Optional - Add when order is shipped</p>
         </div>
 
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-800">{error}</p>
+          <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <p className="text-sm text-red-400">{error}</p>
           </div>
         )}
 
         {success && (
-          <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-sm text-green-800">{success}</p>
+          <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+            <p className="text-sm text-green-400">{success}</p>
           </div>
         )}
 
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed font-medium"
+          className="w-full admin-btn admin-btn-primary"
         >
           {isLoading ? 'Updating...' : 'Update Order'}
         </button>

@@ -178,257 +178,259 @@ export default function ProductForm({ product }: { product?: any }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-800">{error}</p>
+        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+          <p className="text-sm text-red-400">{error}</p>
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow p-6 space-y-6">
-        <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
+      <div className="admin-card">
+        <div className="admin-card-body space-y-6">
+          <div>
+            <h2 className="text-lg font-semibold text-ivory mb-4">Basic Information</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Product Name *
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2">
+                <label htmlFor="name" className="admin-form-label">
+                  Product Name *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  className="admin-form-input"
+                />
+              </div>
 
-            <div>
-              <label htmlFor="sku" className="block text-sm font-medium text-gray-700 mb-1">
-                SKU *
-              </label>
-              <input
-                type="text"
-                id="sku"
-                name="sku"
-                value={formData.sku}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+              <div>
+                <label htmlFor="sku" className="admin-form-label">
+                  SKU *
+                </label>
+                <input
+                  type="text"
+                  id="sku"
+                  name="sku"
+                  value={formData.sku}
+                  onChange={handleChange}
+                  required
+                  className="admin-form-input"
+                />
+              </div>
 
-            <div>
-              <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
-                URL Slug *
-              </label>
-              <input
-                type="text"
-                id="slug"
-                name="slug"
-                value={formData.slug}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+              <div>
+                <label htmlFor="slug" className="admin-form-label">
+                  URL Slug *
+                </label>
+                <input
+                  type="text"
+                  id="slug"
+                  name="slug"
+                  value={formData.slug}
+                  onChange={handleChange}
+                  required
+                  className="admin-form-input"
+                />
+              </div>
 
-            <div className="md:col-span-2">
-              <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+              <div className="md:col-span-2">
+                <label htmlFor="description" className="admin-form-label">
+                  Description
+                </label>
+                <textarea
+                  id="description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  rows={4}
+                  className="admin-form-input resize-y"
+                />
+              </div>
 
-            <div>
-              <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-                Category
-              </label>
-              <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select a category</option>
-                {CATEGORIES.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <div>
+                <label htmlFor="category" className="admin-form-label">
+                  Category
+                </label>
+                <select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="admin-form-select"
+                >
+                  <option value="">Select a category</option>
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            <div>
-              <label htmlFor="tags" className="block text-sm font-medium text-gray-700 mb-1">
-                Tags
-              </label>
-              <input
-                type="text"
-                id="tags"
-                name="tags"
-                value={formData.tags}
-                onChange={handleChange}
-                placeholder="Comma-separated tags"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="pt-6 border-t border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Pricing</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
-                Price * ($)
-              </label>
-              <input
-                type="number"
-                id="price"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="compareAtPrice" className="block text-sm font-medium text-gray-700 mb-1">
-                Compare at Price ($)
-              </label>
-              <input
-                type="number"
-                id="compareAtPrice"
-                name="compareAtPrice"
-                value={formData.compareAtPrice}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="cost" className="block text-sm font-medium text-gray-700 mb-1">
-                Cost ($)
-              </label>
-              <input
-                type="number"
-                id="cost"
-                name="cost"
-                value={formData.cost}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="pt-6 border-t border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Inventory</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label htmlFor="inventory.available" className="block text-sm font-medium text-gray-700 mb-1">
-                Available Stock
-              </label>
-              <input
-                type="number"
-                id="inventory.available"
-                name="inventory.available"
-                value={formData.inventory?.available}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="inventory.reserved" className="block text-sm font-medium text-gray-700 mb-1">
-                Reserved Stock
-              </label>
-              <input
-                type="number"
-                id="inventory.reserved"
-                name="inventory.reserved"
-                value={formData.inventory?.reserved}
-                onChange={handleChange}
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="weight" className="block text-sm font-medium text-gray-700 mb-1">
-                Weight (oz)
-              </label>
-              <input
-                type="number"
-                id="weight"
-                name="weight"
-                value={formData.weight}
-                onChange={handleChange}
-                step="0.01"
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div>
+                <label htmlFor="tags" className="admin-form-label">
+                  Tags
+                </label>
+                <input
+                  type="text"
+                  id="tags"
+                  name="tags"
+                  value={formData.tags}
+                  onChange={handleChange}
+                  placeholder="Comma-separated tags"
+                  className="admin-form-input"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="mt-4">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="inventory.allowBackorder"
-                checked={formData.inventory?.allowBackorder}
-                onChange={handleChange}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm font-medium text-gray-700">Allow backorders</span>
-            </label>
+          <div className="pt-6 border-t border-white/10">
+            <h2 className="text-lg font-semibold text-ivory mb-4">Pricing</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label htmlFor="price" className="admin-form-label">
+                  Price * ($)
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  required
+                  className="admin-form-input"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="compareAtPrice" className="admin-form-label">
+                  Compare at Price ($)
+                </label>
+                <input
+                  type="number"
+                  id="compareAtPrice"
+                  name="compareAtPrice"
+                  value={formData.compareAtPrice}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  className="admin-form-input"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="cost" className="admin-form-label">
+                  Cost ($)
+                </label>
+                <input
+                  type="number"
+                  id="cost"
+                  name="cost"
+                  value={formData.cost}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  className="admin-form-input"
+                />
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="pt-6 border-t border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Status</h2>
+          <div className="pt-6 border-t border-white/10">
+            <h2 className="text-lg font-semibold text-ivory mb-4">Inventory</h2>
 
-          <div className="space-y-3">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="active"
-                checked={formData.active}
-                onChange={handleChange}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm font-medium text-gray-700">Active (visible to customers)</span>
-            </label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label htmlFor="inventory.available" className="admin-form-label">
+                  Available Stock
+                </label>
+                <input
+                  type="number"
+                  id="inventory.available"
+                  name="inventory.available"
+                  value={formData.inventory?.available}
+                  onChange={handleChange}
+                  min="0"
+                  className="admin-form-input"
+                />
+              </div>
 
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                name="featured"
-                checked={formData.featured}
-                onChange={handleChange}
-                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm font-medium text-gray-700">Featured product</span>
-            </label>
+              <div>
+                <label htmlFor="inventory.reserved" className="admin-form-label">
+                  Reserved Stock
+                </label>
+                <input
+                  type="number"
+                  id="inventory.reserved"
+                  name="inventory.reserved"
+                  value={formData.inventory?.reserved}
+                  onChange={handleChange}
+                  min="0"
+                  className="admin-form-input"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="weight" className="admin-form-label">
+                  Weight (oz)
+                </label>
+                <input
+                  type="number"
+                  id="weight"
+                  name="weight"
+                  value={formData.weight}
+                  onChange={handleChange}
+                  step="0.01"
+                  min="0"
+                  className="admin-form-input"
+                />
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="inventory.allowBackorder"
+                  checked={formData.inventory?.allowBackorder}
+                  onChange={handleChange}
+                  className="w-4 h-4 rounded border-gold/30 bg-black text-gold focus:ring-gold focus:ring-offset-0"
+                />
+                <span className="text-sm text-ivory">Allow backorders</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-white/10">
+            <h2 className="text-lg font-semibold text-ivory mb-4">Status</h2>
+
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="active"
+                  checked={formData.active}
+                  onChange={handleChange}
+                  className="w-4 h-4 rounded border-gold/30 bg-black text-gold focus:ring-gold focus:ring-offset-0"
+                />
+                <span className="text-sm text-ivory">Active (visible to customers)</span>
+              </label>
+
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="featured"
+                  checked={formData.featured}
+                  onChange={handleChange}
+                  className="w-4 h-4 rounded border-gold/30 bg-black text-gold focus:ring-gold focus:ring-offset-0"
+                />
+                <span className="text-sm text-ivory">Featured product</span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -439,7 +441,7 @@ export default function ProductForm({ product }: { product?: any }) {
             type="button"
             onClick={handleDelete}
             disabled={isLoading}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-red-400 disabled:cursor-not-allowed font-medium"
+            className="admin-btn admin-btn-danger"
           >
             <Trash2 className="w-4 h-4" />
             Delete Product
@@ -450,14 +452,14 @@ export default function ProductForm({ product }: { product?: any }) {
             type="button"
             onClick={() => router.back()}
             disabled={isLoading}
-            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:cursor-not-allowed font-medium"
+            className="admin-btn admin-btn-secondary"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isLoading}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed font-medium"
+            className="admin-btn admin-btn-primary"
           >
             {isLoading ? 'Saving...' : product ? 'Update Product' : 'Create Product'}
           </button>
