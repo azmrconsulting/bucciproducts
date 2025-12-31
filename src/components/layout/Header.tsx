@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { ShoppingBag, Menu, X, User } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -11,6 +12,7 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
   const { itemCount } = useCart();
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +22,11 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Hide header on admin pages (after all hooks)
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const navLinks = [
     { href: "/products", label: "Shop" },

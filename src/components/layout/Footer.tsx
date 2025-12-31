@@ -1,8 +1,17 @@
+"use client";
+
 import Link from "next/link";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Mail, Phone } from "lucide-react";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname();
+
+  // Hide footer on admin pages
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const footerLinks = {
     shop: [
