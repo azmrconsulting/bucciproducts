@@ -135,7 +135,7 @@ export default function HomePage() {
 
         {/* Hero Content */}
         <div
-          className="flex flex-col justify-center pt-28 pb-12 sm:pt-32 sm:pb-16 lg:pt-24 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start"
+          className="flex flex-col justify-center pt-24 pb-8 sm:pt-28 sm:pb-12 lg:pt-24 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start"
           style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}
         >
           {/* Badge - Hidden on mobile to reduce clutter */}
@@ -158,7 +158,7 @@ export default function HomePage() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg text-gray max-w-[400px] mb-8 sm:mb-12 px-2 sm:px-0 animate-fadeInUp opacity-0 [animation-delay:0.8s]">
+          <p className="text-base sm:text-lg text-gray max-w-[400px] mb-6 sm:mb-10 lg:mb-12 px-2 sm:px-0 animate-fadeInUp opacity-0 [animation-delay:0.8s]">
             Premium hair care crafted for those who demand excellence. Nourish,
             style, and transform.
           </p>
@@ -177,16 +177,16 @@ export default function HomePage() {
 
         {/* Hero Visual */}
         <div
-          className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black min-h-[50vh] sm:min-h-[60vh] lg:min-h-0 py-8 sm:py-0"
+          className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black min-h-[40vh] sm:min-h-[50vh] lg:min-h-0 py-6 sm:py-8"
           style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}
         >
           {/* Pulsing Circle - Hidden on small mobile */}
           <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] border border-gold/10 rounded-full animate-pulse" />
 
           {/* Product Showcase */}
-          <div className="relative w-[280px] h-[320px] sm:w-[350px] sm:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center">
-            {/* Bottles - Scaled down on mobile */}
-            <div className="flex items-end justify-center gap-4 sm:gap-8 p-6 sm:p-10 scale-[0.85] sm:scale-100">
+          <div className="relative w-[240px] h-[260px] sm:w-[320px] sm:h-[360px] lg:w-[350px] lg:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center">
+            {/* Bottles */}
+            <div className="flex items-end justify-center gap-3 sm:gap-6 lg:gap-8 p-4 sm:p-8 lg:p-10">
               {/* Bottle 1 */}
               <div className="flex flex-col items-center animate-fadeInUp opacity-0 [animation-delay:1.4s]">
                 <div className="w-[30px] h-[15px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px]" />
@@ -215,7 +215,7 @@ export default function HomePage() {
             </div>
 
             {/* Glow Effect */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-gold/15 rounded-full blur-[60px] -z-10" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] sm:w-[350px] lg:w-[400px] h-[250px] sm:h-[350px] lg:h-[400px] bg-gold/15 rounded-full blur-[60px] -z-10" />
           </div>
 
           {/* Decorative Elements - Hidden on mobile, proper spacing from edges */}

@@ -32,10 +32,10 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-400 ${
         isScrolled
-          ? "bg-black/95 backdrop-blur-[20px] py-3 border-b border-gold/10"
-          : "py-5 lg:py-6"
+          ? "bg-black/95 backdrop-blur-[20px] pt-3 pb-3 border-b border-gold/10"
+          : "pt-4 pb-4 sm:pt-5 sm:pb-5 lg:pt-6 lg:pb-6"
       }`}
-      style={{ transitionTimingFunction: "var(--ease-out)" }}
+      style={{ transitionTimingFunction: "var(--ease-out)", paddingTop: isScrolled ? undefined : 'max(1rem, env(safe-area-inset-top, 1rem))' }}
     >
       {/* Outer container for edge spacing */}
       <div className="w-full" style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}>
