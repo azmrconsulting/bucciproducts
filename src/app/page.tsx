@@ -121,7 +121,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
       {/* Hero Section */}
-      <header className="min-h-screen grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden">
+      <header className="lg:min-h-screen grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden">
         {/* Background Gradient */}
         <div
           className="absolute inset-0 pointer-events-none"
