@@ -252,18 +252,18 @@ export default function HomePage() {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
             {products.map((product) => (
               <article key={product.id} className="card group">
                 {/* Product Image */}
                 <div className="relative aspect-square bg-gradient-to-br from-charcoal to-charcoal-light flex items-center justify-center">
                   {product.tag && (
-                    <span className="absolute top-4 left-4 font-display text-[0.65rem] tracking-[0.15em] uppercase px-3 py-1.5 bg-gold text-black">
+                    <span className="absolute top-2 left-2 sm:top-3 sm:left-3 font-display text-[0.55rem] sm:text-[0.6rem] tracking-[0.1em] uppercase px-2 py-1 sm:px-2.5 sm:py-1 bg-gold text-black">
                       {product.tag}
                     </span>
                   )}
                   {/* Placeholder Bottle */}
-                  <div className="p-12">
+                  <div className="p-6 sm:p-8 lg:p-10">
                     <div className="flex flex-col items-center">
                       <div
                         className={`w-[25px] h-[12px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px] ${
@@ -288,15 +288,15 @@ export default function HomePage() {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4 sm:p-6 lg:p-8">
-                  <h3 className="font-display text-lg sm:text-xl font-medium mb-2 text-ivory">
+                <div className="p-3 sm:p-4 lg:p-5">
+                  <h3 className="font-display text-sm sm:text-base lg:text-lg font-medium mb-1 sm:mb-2 text-ivory line-clamp-1">
                     {product.name}
                   </h3>
-                  <p className="text-sm sm:text-[0.9rem] text-gray mb-3 sm:mb-4">
+                  <p className="text-xs sm:text-sm text-gray mb-2 sm:mb-3 line-clamp-2 hidden sm:block">
                     {product.description}
                   </p>
-                  <div className="flex justify-between items-center pt-3 sm:pt-4 border-t border-white/5">
-                    <span className="font-display text-lg sm:text-xl text-gold">
+                  <div className="flex justify-between items-center pt-2 sm:pt-3 border-t border-white/5">
+                    <span className="font-display text-base sm:text-lg text-gold">
                       ${product.price}
                     </span>
                     <Link
@@ -401,17 +401,17 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {benefits.map((benefit) => (
               <article
                 key={benefit.title}
-                className="p-6 sm:p-8 lg:p-12 bg-black border border-white/5 transition-all duration-400 relative overflow-hidden text-center group hover:-translate-y-2 hover:border-gold/20 hover:shadow-lg"
+                className="p-4 sm:p-5 lg:p-6 bg-black border border-white/5 transition-all duration-400 relative overflow-hidden text-center group hover:-translate-y-1 hover:border-gold/20 hover:shadow-lg"
               >
                 {/* Top accent line */}
-                <div className="absolute top-0 left-0 w-full h-[2px] bg-gold origin-left scale-x-0 transition-transform duration-400 group-hover:scale-x-100" />
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gold origin-left scale-x-0 transition-transform duration-400 group-hover:scale-x-100" />
 
                 {/* Icon */}
-                <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 sm:mb-6 lg:mb-8 text-gold">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-3 sm:mb-4 text-gold">
                   <svg
                     viewBox="0 0 48 48"
                     fill="none"
@@ -441,10 +441,10 @@ export default function HomePage() {
                   </svg>
                 </div>
 
-                <h3 className="font-display text-lg sm:text-xl font-medium mb-2 sm:mb-4 text-ivory">
+                <h3 className="font-display text-sm sm:text-base lg:text-lg font-medium mb-1 sm:mb-2 text-ivory">
                   {benefit.title}
                 </h3>
-                <p className="text-sm sm:text-[0.95rem] text-gray leading-relaxed">
+                <p className="text-xs sm:text-sm text-gray leading-relaxed hidden sm:block">
                   {benefit.description}
                 </p>
               </article>
@@ -546,22 +546,22 @@ export default function HomePage() {
             <em>Saying</em>
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-8 sm:mt-10">
             {testimonials.map((testimonial, index) => (
               <blockquote
                 key={index}
-                className="p-6 sm:p-8 lg:p-12 bg-charcoal border border-white/5 text-left"
+                className="p-4 sm:p-5 lg:p-6 bg-charcoal border border-white/5 text-left"
               >
                 {/* Stars */}
-                <div className="flex gap-1 mb-4 sm:mb-6 lg:mb-8">
+                <div className="flex gap-0.5 mb-3 sm:mb-4">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className="w-4 h-4 text-gold fill-gold"
+                      className="w-3 h-3 sm:w-4 sm:h-4 text-gold fill-gold"
                     />
                   ))}
                 </div>
-                <p className="text-base sm:text-lg italic text-ivory mb-4 sm:mb-6 lg:mb-8">
+                <p className="text-sm sm:text-base italic text-ivory mb-3 sm:mb-4 line-clamp-4">
                   &ldquo;{testimonial.text}&rdquo;
                 </p>
                 <cite className="not-italic">

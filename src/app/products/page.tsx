@@ -88,7 +88,7 @@ export default async function ProductsPage() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
           {products.map((product) => {
             const bottleType = getBottleType(product.category);
             const tag = getProductTag(product);
@@ -99,12 +99,12 @@ export default async function ProductsPage() {
                 {/* Product Image */}
                 <div className="relative aspect-square bg-gradient-to-br from-charcoal to-charcoal-light flex items-center justify-center">
                   {tag && (
-                    <span className="absolute top-4 left-4 font-display text-[0.65rem] tracking-[0.15em] uppercase px-3 py-1.5 bg-gold text-black">
+                    <span className="absolute top-2 left-2 sm:top-3 sm:left-3 font-display text-[0.55rem] sm:text-[0.6rem] tracking-[0.1em] uppercase px-2 py-1 sm:px-2.5 sm:py-1 bg-gold text-black">
                       {tag}
                     </span>
                   )}
                   {/* Placeholder Bottle or Set */}
-                  <div className="p-12">
+                  <div className="p-6 sm:p-8 lg:p-10">
                     {bottleType === "set" ? (
                       <div className="flex items-end justify-center gap-2">
                         <div className="flex flex-col items-center">
@@ -154,15 +154,15 @@ export default async function ProductsPage() {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4 sm:p-6 lg:p-8">
-                  <h3 className="font-display text-lg sm:text-xl font-medium mb-2 text-ivory">
+                <div className="p-3 sm:p-4 lg:p-5">
+                  <h3 className="font-display text-sm sm:text-base lg:text-lg font-medium mb-1 sm:mb-2 text-ivory line-clamp-1">
                     {product.name}
                   </h3>
-                  <p className="text-sm sm:text-[0.9rem] text-gray mb-3 sm:mb-4 line-clamp-2">
+                  <p className="text-xs sm:text-sm text-gray mb-2 sm:mb-3 line-clamp-2 hidden sm:block">
                     {product.shortDescription}
                   </p>
-                  <div className="flex justify-between items-center pt-3 sm:pt-4 border-t border-white/5">
-                    <span className="font-display text-lg sm:text-xl text-gold">
+                  <div className="flex justify-between items-center pt-2 sm:pt-3 border-t border-white/5">
+                    <span className="font-display text-base sm:text-lg text-gold">
                       ${price}
                     </span>
                     <Link

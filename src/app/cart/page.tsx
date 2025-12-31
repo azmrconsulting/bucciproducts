@@ -64,20 +64,20 @@ export default function CartPage() {
           <span className="text-sm tracking-wide">Continue Shopping</span>
         </Link>
 
-        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl text-ivory mb-8 sm:mb-12">
-          Your Cart <span className="text-gray text-lg sm:text-xl md:text-2xl">({itemCount} items)</span>
+        <h1 className="font-display text-xl sm:text-2xl md:text-3xl text-ivory mb-6 sm:mb-8">
+          Your Cart <span className="text-gray text-base sm:text-lg md:text-xl">({itemCount})</span>
         </h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
             {items.map((item) => {
               const bottleType = getBottleType(item.category);
 
               return (
                 <div
                   key={item.id}
-                  className="flex gap-4 sm:gap-6 p-4 sm:p-6 bg-charcoal-light border border-white/5"
+                  className="flex gap-3 sm:gap-4 p-3 sm:p-4 bg-charcoal-light border border-white/5"
                 >
                   {/* Product Image */}
                   <Link
