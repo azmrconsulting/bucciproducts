@@ -135,7 +135,7 @@ export default function HomePage() {
 
         {/* Hero Content */}
         <div
-          className="flex flex-col justify-center pt-24 pb-8 sm:pt-28 sm:pb-12 lg:pt-24 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start"
+          className="flex flex-col justify-center pt-24 pb-2 sm:pt-28 sm:pb-8 lg:pt-24 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start"
           style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}
         >
           {/* Badge - Hidden on mobile to reduce clutter */}
