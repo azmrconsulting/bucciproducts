@@ -433,7 +433,7 @@ img {
 .section-container {
   max-width: var(--container-max);
   margin: 0 auto;
-  padding: var(--space-10) var(--space-4);
+  padding: var(--space-12) var(--space-4);
   position: relative;
   z-index: 1;
 }
