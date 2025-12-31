@@ -187,7 +187,7 @@ export default function HomePage() {
           <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] border border-gold/10 rounded-full animate-pulse" />
 
           {/* Product Showcase */}
-          <div className="relative w-[240px] h-[260px] sm:w-[320px] sm:h-[360px] lg:w-[350px] lg:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center">
+          <div className="relative w-[240px] h-[260px] sm:w-[320px] sm:h-[360px] lg:w-[350px] lg:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center my-10 sm:my-12 lg:my-0">
             {/* Bottles */}
             <div className="flex items-end justify-center gap-3 sm:gap-6 lg:gap-8 p-4 sm:p-8 lg:p-10">
               {/* Bottle 1 */}
