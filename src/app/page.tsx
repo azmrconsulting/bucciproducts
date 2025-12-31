@@ -180,7 +180,7 @@ export default function HomePage() {
 
         {/* Hero Visual */}
         <div
-          className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black py-10 sm:py-12 lg:min-h-0 lg:py-0"
+          className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black py-16 sm:py-20 lg:min-h-0 lg:py-0"
           style={{ paddingLeft: 'clamp(16px, 4vw, 96px)', paddingRight: 'clamp(16px, 4vw, 96px)' }}
         >
           {/* Pulsing Circle - Hidden on small mobile */}
