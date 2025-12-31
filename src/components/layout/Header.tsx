@@ -40,72 +40,74 @@ export default function Header() {
       >
         {/* Outer container for edge spacing */}
         <div className="w-full" style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}>
-          <nav className="max-w-[1400px] mx-auto flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex flex-col items-start flex-shrink-0">
-            <span className="font-display text-xl sm:text-2xl font-semibold tracking-[0.2em] sm:tracking-[0.3em] text-gold leading-none">
-              BUCCI
-            </span>
-            <span className="font-display text-[0.5rem] sm:text-[0.6rem] tracking-[0.3em] sm:tracking-[0.5em] text-ivory/70 mt-0.5">
-              HAIR CARE
-            </span>
-          </Link>
-
-          {/* Desktop Navigation */}
-          <ul className="hidden md:flex list-none gap-8">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="font-display text-[0.85rem] tracking-[0.1em] uppercase text-ivory/80 hover:text-gold hover:opacity-100 transition-all duration-300 relative group"
-                >
-                  {link.label}
-                  <span className="absolute bottom-[-4px] left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          {/* Right Side Actions */}
-          <div className="flex items-center gap-4">
-            {/* User Account */}
-            <Link
-              href={session ? "/account" : "/auth/login"}
-              className="hidden md:flex items-center gap-2 font-display text-[0.8rem] tracking-[0.1em] uppercase text-ivory/80 hover:text-gold transition-colors duration-300"
-            >
-              <User className="w-5 h-5" />
-              <span className="hidden lg:inline">
-                {session ? "Account" : "Sign In"}
-              </span>
-            </Link>
-
-            {/* Cart Button */}
-            <Link
-              href="/cart"
-              className="relative p-2 text-gold hover:text-gold-light transition-colors duration-300"
-            >
-              <ShoppingBag className="w-6 h-6" />
-              {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold text-black text-xs font-display font-semibold rounded-full flex items-center justify-center">
-                  {itemCount > 99 ? "99+" : itemCount}
+          <nav className="w-full flex items-center">
+            {/* Left Section - Logo */}
+            <div className="flex-1 flex justify-start">
+              <Link href="/" className="flex flex-col items-start flex-shrink-0">
+                <span className="font-display text-xl sm:text-2xl font-semibold tracking-[0.2em] sm:tracking-[0.3em] text-gold leading-none">
+                  BUCCI
                 </span>
-              )}
-            </Link>
+                <span className="font-display text-[0.5rem] sm:text-[0.6rem] tracking-[0.3em] sm:tracking-[0.5em] text-ivory/70 mt-0.5">
+                  HAIR CARE
+                </span>
+              </Link>
+            </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-2"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6 text-gold" />
-              ) : (
-                <Menu className="w-6 h-6 text-gold" />
-              )}
-            </button>
-          </div>
-        </nav>
+            {/* Center Section - Desktop Navigation */}
+            <ul className="hidden md:flex list-none gap-8 lg:gap-10">
+              {navLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="font-display text-[0.85rem] tracking-[0.1em] uppercase text-ivory/80 hover:text-gold hover:opacity-100 transition-all duration-300 relative group"
+                  >
+                    {link.label}
+                    <span className="absolute bottom-[-4px] left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* Right Section - Actions */}
+            <div className="flex-1 flex justify-end items-center gap-4 lg:gap-6">
+              {/* User Account */}
+              <Link
+                href={session ? "/account" : "/auth/login"}
+                className="hidden md:flex items-center gap-2 font-display text-[0.8rem] tracking-[0.1em] uppercase text-ivory/80 hover:text-gold transition-colors duration-300"
+              >
+                <User className="w-5 h-5" />
+                <span className="hidden lg:inline">
+                  {session ? "Account" : "Sign In"}
+                </span>
+              </Link>
+
+              {/* Cart Button */}
+              <Link
+                href="/cart"
+                className="relative p-2 text-gold hover:text-gold-light transition-colors duration-300"
+              >
+                <ShoppingBag className="w-6 h-6" />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-gold text-black text-xs font-display font-semibold rounded-full flex items-center justify-center">
+                    {itemCount > 99 ? "99+" : itemCount}
+                  </span>
+                )}
+              </Link>
+
+              {/* Mobile Menu Button */}
+              <button
+                className="md:hidden flex flex-col gap-[5px] bg-transparent border-none cursor-pointer p-2"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? (
+                  <X className="w-6 h-6 text-gold" />
+                ) : (
+                  <Menu className="w-6 h-6 text-gold" />
+                )}
+              </button>
+            </div>
+          </nav>
         </div>
       </header>
 

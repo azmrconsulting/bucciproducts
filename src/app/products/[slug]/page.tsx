@@ -245,7 +245,7 @@ export default async function ProductPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <main className="min-h-screen bg-charcoal pt-32 sm:pt-32">
+      <main className="min-h-screen bg-charcoal product-page-main">
         <div className="section-container">
         {/* Back Link */}
         <Link

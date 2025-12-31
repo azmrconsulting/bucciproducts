@@ -14,14 +14,9 @@ export default function Footer() {
     company: [
       { href: "/#about", label: "About Us" },
       { href: "/#contact", label: "Contact" },
-      { href: "/shipping", label: "Shipping" },
-      { href: "/returns", label: "Returns" },
     ],
     support: [
-      { href: "/faq", label: "FAQ" },
-      { href: "/track-order", label: "Track Order" },
       { href: "/account", label: "My Account" },
-      { href: "/contact", label: "Help" },
     ],
   };
 
@@ -122,24 +117,10 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="max-w-[1400px] mx-auto py-4 sm:py-6 border-t border-white/5" style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="flex justify-center items-center">
           <p className="text-gray text-[0.85rem]">
             &copy; {currentYear} Bucci Products. All rights reserved.
           </p>
-          <div className="flex gap-6">
-            <Link
-              href="/privacy"
-              className="text-gray text-[0.85rem] hover:text-gold transition-colors duration-300"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms"
-              className="text-gray text-[0.85rem] hover:text-gold transition-colors duration-300"
-            >
-              Terms of Service
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

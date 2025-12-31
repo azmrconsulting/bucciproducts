@@ -674,6 +674,17 @@ img {
   background-color: var(--black);
 }
 
+/* Product page spacing - more space on mobile for header clearance */
+.product-page-main {
+  padding-top: 60px !important;
+}
+
+@media (min-width: 640px) {
+  .product-page-main {
+    padding-top: 128px !important;
+  }
+}
+
 /* ============================================
    PREMIUM EFFECTS & ENHANCEMENTS
    ============================================ */

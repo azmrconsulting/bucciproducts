@@ -135,7 +135,7 @@ export default function HomePage() {
 
         {/* Hero Content */}
         <div
-          className="flex flex-col pt-24 pb-6 sm:pt-32 sm:pb-10 lg:justify-center lg:pt-0 lg:pb-0 relative z-[1] text-center lg:text-left items-center lg:items-start"
+          className="flex flex-col pt-24 pb-6 sm:pt-32 sm:pb-10 lg:justify-center lg:pt-0 lg:pb-0 relative z-[1] text-center lg:text-left items-center lg:items-start 2xl:pl-[10%]"
           style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}
         >
           {/* Spacer for header clearance - mobile only */}
@@ -180,7 +180,7 @@ export default function HomePage() {
 
         {/* Hero Visual */}
         <div
-          className="hero-visual-mobile flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black lg:min-h-0"
+          className="hero-visual-mobile flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black lg:min-h-0 2xl:pr-[10%]"
           style={{ paddingLeft: 'clamp(16px, 4vw, 96px)', paddingRight: 'clamp(16px, 4vw, 96px)' }}
         >
           {/* Pulsing Circle - Hidden on small mobile */}
