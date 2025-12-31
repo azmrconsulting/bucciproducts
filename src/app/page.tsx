@@ -135,11 +135,11 @@ export default function HomePage() {
 
         {/* Hero Content */}
         <div
-          className="flex flex-col pt-24 pb-6 sm:pt-32 sm:pb-10 lg:pt-32 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start"
+          className="flex flex-col pt-24 pb-6 sm:pt-32 sm:pb-10 lg:justify-center lg:pt-0 lg:pb-0 relative z-[1] text-center lg:text-left items-center lg:items-start"
           style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}
         >
-          {/* Spacer for header clearance */}
-          <div className="h-12 sm:h-16 w-full" aria-hidden="true" />
+          {/* Spacer for header clearance - mobile only */}
+          <div className="h-12 sm:h-16 lg:hidden w-full" aria-hidden="true" />
 
           {/* Badge - Hidden on mobile to reduce clutter */}
           <div className="hidden sm:flex items-center gap-3 mb-8 animate-fadeInUp opacity-0 [animation-delay:0.2s]">
