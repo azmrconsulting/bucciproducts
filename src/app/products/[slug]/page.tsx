@@ -245,22 +245,22 @@ export default async function ProductPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <main className="min-h-screen bg-charcoal pt-32">
+      <main className="min-h-screen bg-charcoal pt-24 sm:pt-32">
         <div className="section-container">
         {/* Back Link */}
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 text-gray hover:text-gold transition-colors mb-12"
+          className="inline-flex items-center gap-2 text-gray hover:text-gold transition-colors mb-8 sm:mb-12"
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm tracking-wide">Back to Collection</span>
         </Link>
 
         {/* Product Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-24">
           {/* Product Image */}
           <div className="relative">
-            <div className="aspect-square bg-gradient-to-br from-charcoal to-charcoal-light border border-gold/20 flex items-center justify-center sticky top-32">
+            <div className="aspect-square bg-gradient-to-br from-charcoal to-charcoal-light border border-gold/20 flex items-center justify-center lg:sticky lg:top-28">
               {/* Tag */}
               {product.tags.includes("bestseller") && (
                 <span className="absolute top-6 left-6 font-display text-[0.7rem] tracking-[0.15em] uppercase px-4 py-2 bg-gold text-black">

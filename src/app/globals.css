@@ -401,7 +401,13 @@ img {
 
 .section-header {
   text-align: center;
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  .section-header {
+    margin-bottom: var(--space-xl);
+  }
 }
 
 .section-label {

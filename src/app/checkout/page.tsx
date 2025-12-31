@@ -61,22 +61,22 @@ export default function CheckoutPage() {
   const total = totalPrice + shipping;
 
   return (
-    <main className="min-h-screen bg-charcoal pt-32">
+    <main className="min-h-screen bg-charcoal pt-24 sm:pt-32">
       <div className="section-container max-w-2xl">
         {/* Back Link */}
         <Link
           href="/cart"
-          className="inline-flex items-center gap-2 text-gray hover:text-gold transition-colors mb-12"
+          className="inline-flex items-center gap-2 text-gray hover:text-gold transition-colors mb-8 sm:mb-12"
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm tracking-wide">Back to Cart</span>
         </Link>
 
-        <h1 className="font-display text-4xl text-ivory mb-8">Checkout</h1>
+        <h1 className="font-display text-2xl sm:text-3xl md:text-4xl text-ivory mb-6 sm:mb-8">Checkout</h1>
 
         {/* Order Summary */}
-        <div className="bg-charcoal-light border border-white/5 p-8 mb-8">
-          <h2 className="font-display text-xl text-ivory mb-6">Order Summary</h2>
+        <div className="bg-charcoal-light border border-white/5 p-5 sm:p-8 mb-6 sm:mb-8">
+          <h2 className="font-display text-lg sm:text-xl text-ivory mb-4 sm:mb-6">Order Summary</h2>
 
           {/* Items */}
           <div className="space-y-4 mb-6">

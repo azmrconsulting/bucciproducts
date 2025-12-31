@@ -27,8 +27,8 @@ export default function Footer() {
 
   return (
     <footer className="bg-black border-t border-white/5">
-      <div className="max-w-[1400px] mx-auto px-8 py-16 md:py-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+      <div className="max-w-[1400px] mx-auto py-12 sm:py-16 md:py-24" style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex flex-col items-start mb-4">
@@ -66,12 +66,12 @@ export default function Footer() {
             <h4 className="font-display text-[0.85rem] tracking-[0.15em] uppercase text-ivory mb-4">
               Shop
             </h4>
-            <ul className="list-none space-y-2">
+            <ul className="list-none space-y-3 sm:space-y-2">
               {footerLinks.shop.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray text-[0.95rem] hover:text-gold transition-colors duration-300"
+                    className="text-gray text-[0.95rem] hover:text-gold transition-colors duration-300 py-1 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -85,12 +85,12 @@ export default function Footer() {
             <h4 className="font-display text-[0.85rem] tracking-[0.15em] uppercase text-ivory mb-4">
               Company
             </h4>
-            <ul className="list-none space-y-2">
+            <ul className="list-none space-y-3 sm:space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray text-[0.95rem] hover:text-gold transition-colors duration-300"
+                    className="text-gray text-[0.95rem] hover:text-gold transition-colors duration-300 py-1 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -104,12 +104,12 @@ export default function Footer() {
             <h4 className="font-display text-[0.85rem] tracking-[0.15em] uppercase text-ivory mb-4">
               Support
             </h4>
-            <ul className="list-none space-y-2">
+            <ul className="list-none space-y-3 sm:space-y-2">
               {footerLinks.support.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-gray text-[0.95rem] hover:text-gold transition-colors duration-300"
+                    className="text-gray text-[0.95rem] hover:text-gold transition-colors duration-300 py-1 inline-block"
                   >
                     {link.label}
                   </Link>
@@ -121,7 +121,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className="max-w-[1400px] mx-auto px-8 py-6 border-t border-white/5">
+      <div className="max-w-[1400px] mx-auto py-4 sm:py-6 border-t border-white/5" style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}>
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-gray text-[0.85rem]">
             &copy; {currentYear} Bucci Products. All rights reserved.

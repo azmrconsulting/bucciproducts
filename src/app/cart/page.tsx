@@ -58,7 +58,7 @@ export default function CartPage() {
         {/* Back Link */}
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 text-gray hover:text-gold transition-colors mb-12"
+          className="inline-flex items-center gap-2 text-gray hover:text-gold transition-colors mb-8 sm:mb-12"
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm tracking-wide">Continue Shopping</span>

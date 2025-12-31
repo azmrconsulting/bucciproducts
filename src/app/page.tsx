@@ -288,15 +288,15 @@ export default function HomePage() {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-8">
-                  <h3 className="font-display text-xl font-medium mb-2 text-ivory">
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <h3 className="font-display text-lg sm:text-xl font-medium mb-2 text-ivory">
                     {product.name}
                   </h3>
-                  <p className="text-[0.9rem] text-gray mb-4">
+                  <p className="text-sm sm:text-[0.9rem] text-gray mb-3 sm:mb-4">
                     {product.description}
                   </p>
-                  <div className="flex justify-between items-center pt-4 border-t border-white/5">
-                    <span className="font-display text-xl text-gold">
+                  <div className="flex justify-between items-center pt-3 sm:pt-4 border-t border-white/5">
+                    <span className="font-display text-lg sm:text-xl text-gold">
                       ${product.price}
                     </span>
                     <Link
@@ -316,7 +316,7 @@ export default function HomePage() {
       {/* Collection Section */}
       <section id="collection" className="bg-black relative overflow-hidden">
         <div className="section-container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-24 items-center">
             {/* Content */}
             <div className="order-2 lg:order-1">
               <span className="section-label">The Signature Set</span>
@@ -325,14 +325,14 @@ export default function HomePage() {
                 <br />
                 <em>Transformation</em>
               </h2>
-              <p className="text-lg text-gray mb-12">
+              <p className="text-base sm:text-lg text-gray mb-8 sm:mb-12">
                 Experience the full Bucci ritual. Our signature set combines all
                 four products for a complete hair care system that cleanses,
                 conditions, treats, and styles.
               </p>
 
               {/* Includes List */}
-              <ul className="list-none mb-12">
+              <ul className="list-none mb-8 sm:mb-12">
                 {[
                   "Hydra Shampoo (250ml)",
                   "Silk Conditioner (250ml)",
@@ -350,15 +350,15 @@ export default function HomePage() {
               </ul>
 
               {/* Price */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 sm:gap-8 mb-8">
-                <span className="font-display text-2xl text-gray line-through">
+              <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 sm:gap-8 mb-6 sm:mb-8">
+                <span className="font-display text-xl sm:text-2xl text-gray line-through">
                   $154
                 </span>
                 <div className="flex flex-col">
                   <span className="text-xs text-gray uppercase tracking-[0.1em]">
                     Set Price
                   </span>
-                  <span className="font-display text-5xl font-medium text-gold leading-none">
+                  <span className="font-display text-4xl sm:text-5xl font-medium text-gold leading-none">
                     $129
                   </span>
                 </div>
@@ -372,15 +372,15 @@ export default function HomePage() {
 
             {/* Visual */}
             <div className="order-1 lg:order-2 flex items-center justify-center">
-              <div className="relative w-[400px] h-[400px]">
+              <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[400px] lg:h-[400px]">
                 {/* Floating Set Items */}
-                <div className="absolute w-[50px] h-[120px] top-1/2 left-[20%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float" />
-                <div className="absolute w-[45px] h-[100px] top-[40%] left-[38%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float [animation-delay:0.5s]" />
-                <div className="absolute w-[55px] h-[90px] top-[55%] left-[55%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-md animate-float [animation-delay:1s]" />
-                <div className="absolute w-[40px] h-[70px] top-[45%] left-[72%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float [animation-delay:1.5s]" />
+                <div className="absolute w-[35px] sm:w-[45px] lg:w-[50px] h-[85px] sm:h-[100px] lg:h-[120px] top-1/2 left-[20%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float" />
+                <div className="absolute w-[32px] sm:w-[40px] lg:w-[45px] h-[70px] sm:h-[85px] lg:h-[100px] top-[40%] left-[38%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float [animation-delay:0.5s]" />
+                <div className="absolute w-[38px] sm:w-[48px] lg:w-[55px] h-[65px] sm:h-[75px] lg:h-[90px] top-[55%] left-[55%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-md animate-float [animation-delay:1s]" />
+                <div className="absolute w-[28px] sm:w-[35px] lg:w-[40px] h-[50px] sm:h-[60px] lg:h-[70px] top-[45%] left-[72%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float [animation-delay:1.5s]" />
 
                 {/* Glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-gold/15 rounded-full blur-[50px]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] sm:w-[250px] lg:w-[300px] h-[200px] sm:h-[250px] lg:h-[300px] bg-gold/15 rounded-full blur-[50px]" />
               </div>
             </div>
           </div>
@@ -405,13 +405,13 @@ export default function HomePage() {
             {benefits.map((benefit) => (
               <article
                 key={benefit.title}
-                className="p-12 bg-black border border-white/5 transition-all duration-400 relative overflow-hidden text-center group hover:-translate-y-2 hover:border-gold/20 hover:shadow-lg"
+                className="p-6 sm:p-8 lg:p-12 bg-black border border-white/5 transition-all duration-400 relative overflow-hidden text-center group hover:-translate-y-2 hover:border-gold/20 hover:shadow-lg"
               >
                 {/* Top accent line */}
                 <div className="absolute top-0 left-0 w-full h-[2px] bg-gold origin-left scale-x-0 transition-transform duration-400 group-hover:scale-x-100" />
 
                 {/* Icon */}
-                <div className="w-12 h-12 mx-auto mb-8 text-gold">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 sm:mb-6 lg:mb-8 text-gold">
                   <svg
                     viewBox="0 0 48 48"
                     fill="none"
@@ -441,10 +441,10 @@ export default function HomePage() {
                   </svg>
                 </div>
 
-                <h3 className="font-display text-xl font-medium mb-4 text-ivory">
+                <h3 className="font-display text-lg sm:text-xl font-medium mb-2 sm:mb-4 text-ivory">
                   {benefit.title}
                 </h3>
-                <p className="text-[0.95rem] text-gray leading-relaxed">
+                <p className="text-sm sm:text-[0.95rem] text-gray leading-relaxed">
                   {benefit.description}
                 </p>
               </article>
@@ -468,7 +468,7 @@ export default function HomePage() {
         />
 
         <div className="section-container relative z-[1]">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-24 items-center">
             {/* Image Placeholder */}
             <div className="order-2 lg:order-1">
               <div className="aspect-square bg-charcoal border border-gold/20 flex items-center justify-center relative overflow-hidden">
@@ -489,14 +489,14 @@ export default function HomePage() {
                 <br />
                 <em>Reimagined</em>
               </h2>
-              <div className="mb-12">
-                <p className="text-lg text-gray mb-6">
+              <div className="mb-8 sm:mb-12">
+                <p className="text-base sm:text-lg text-gray mb-4 sm:mb-6">
                   Bucci Products was born from a simple belief: everyone
                   deserves hair care that actually works. Founded by beauty
                   industry veterans, we set out to create products that combine
                   luxury with real results.
                 </p>
-                <p className="text-lg text-gray">
+                <p className="text-base sm:text-lg text-gray">
                   Every formula is developed in collaboration with top stylists
                   and dermatologists, then tested extensively to ensure it
                   delivers on its promise. No compromises, no shortcuts—just
@@ -505,28 +505,28 @@ export default function HomePage() {
               </div>
 
               {/* Stats */}
-              <div className="flex flex-wrap gap-12 lg:gap-16 pt-12 border-t border-white/10">
+              <div className="grid grid-cols-3 gap-4 sm:gap-8 lg:gap-16 pt-8 sm:pt-12 border-t border-white/10">
                 <div className="flex flex-col">
-                  <span className="font-display text-4xl font-medium text-gold leading-none">
+                  <span className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-gold leading-none">
                     10K+
                   </span>
-                  <span className="text-[0.85rem] text-gray mt-2">
+                  <span className="text-xs sm:text-[0.85rem] text-gray mt-1 sm:mt-2">
                     Happy Customers
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-display text-4xl font-medium text-gold leading-none">
+                  <span className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-gold leading-none">
                     100%
                   </span>
-                  <span className="text-[0.85rem] text-gray mt-2">
+                  <span className="text-xs sm:text-[0.85rem] text-gray mt-1 sm:mt-2">
                     Cruelty Free
                   </span>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-display text-4xl font-medium text-gold leading-none">
+                  <span className="font-display text-2xl sm:text-3xl lg:text-4xl font-medium text-gold leading-none">
                     USA
                   </span>
-                  <span className="text-[0.85rem] text-gray mt-2">
+                  <span className="text-xs sm:text-[0.85rem] text-gray mt-1 sm:mt-2">
                     Made & Shipped
                   </span>
                 </div>
@@ -550,10 +550,10 @@ export default function HomePage() {
             {testimonials.map((testimonial, index) => (
               <blockquote
                 key={index}
-                className="p-12 bg-charcoal border border-white/5 text-left"
+                className="p-6 sm:p-8 lg:p-12 bg-charcoal border border-white/5 text-left"
               >
                 {/* Stars */}
-                <div className="flex gap-1 mb-8">
+                <div className="flex gap-1 mb-4 sm:mb-6 lg:mb-8">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
@@ -561,7 +561,7 @@ export default function HomePage() {
                     />
                   ))}
                 </div>
-                <p className="text-lg italic text-ivory mb-8">
+                <p className="text-base sm:text-lg italic text-ivory mb-4 sm:mb-6 lg:mb-8">
                   &ldquo;{testimonial.text}&rdquo;
                 </p>
                 <cite className="not-italic">
@@ -583,7 +583,7 @@ export default function HomePage() {
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-gold to-transparent" />
 
         <div className="section-container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-12 lg:gap-24 items-start">
             {/* Contact Info */}
             <div>
               <span className="section-label">Get in Touch</span>
@@ -592,7 +592,7 @@ export default function HomePage() {
                 <br />
                 <em>Connect</em>
               </h2>
-              <p className="text-lg text-gray max-w-[400px] mb-12">
+              <p className="text-base sm:text-lg text-gray max-w-[400px] mb-8 sm:mb-12">
                 Questions about our products? Want to become a stockist? We'd
                 love to hear from you.
               </p>
@@ -615,7 +615,7 @@ export default function HomePage() {
             </div>
 
             {/* Contact Form */}
-            <form className="flex flex-col gap-8">
+            <form className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
               <div className="form-group">
                 <label htmlFor="name" className="form-label">
                   Name
