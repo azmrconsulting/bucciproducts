@@ -462,6 +462,19 @@ img {
   }
 }
 
+/* Hero visual mobile spacing - adds top/bottom padding on mobile only */
+.hero-visual-mobile {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+@media (min-width: 1024px) {
+  .hero-visual-mobile {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
 .section-header {
   text-align: center;
   margin-bottom: var(--space-8);

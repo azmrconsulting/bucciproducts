@@ -180,14 +180,12 @@ export default function HomePage() {
 
         {/* Hero Visual */}
         <div
-          className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black py-16 sm:py-20 lg:min-h-0 lg:py-0"
+          className="hero-visual-mobile flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black lg:min-h-0"
           style={{ paddingLeft: 'clamp(16px, 4vw, 96px)', paddingRight: 'clamp(16px, 4vw, 96px)' }}
         >
           {/* Pulsing Circle - Hidden on small mobile */}
           <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] border border-gold/10 rounded-full animate-pulse" />
 
-          {/* Product Showcase Wrapper - adds spacing on mobile */}
-          <div className="py-8 sm:py-10 lg:py-0">
           {/* Product Showcase */}
           <div className="relative w-[240px] h-[260px] sm:w-[320px] sm:h-[360px] lg:w-[350px] lg:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center">
             {/* Bottles */}
@@ -221,7 +219,6 @@ export default function HomePage() {
 
             {/* Glow Effect */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] sm:w-[350px] lg:w-[400px] h-[250px] sm:h-[350px] lg:h-[400px] bg-gold/15 rounded-full blur-[60px] -z-10" />
-          </div>
           </div>
 
           {/* Decorative Elements - Hidden on mobile, proper spacing from edges */}
