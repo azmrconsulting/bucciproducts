@@ -186,8 +186,10 @@ export default function HomePage() {
           {/* Pulsing Circle - Hidden on small mobile */}
           <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] border border-gold/10 rounded-full animate-pulse" />
 
+          {/* Product Showcase Wrapper - adds spacing on mobile */}
+          <div className="py-8 sm:py-10 lg:py-0">
           {/* Product Showcase */}
-          <div className="relative w-[240px] h-[260px] sm:w-[320px] sm:h-[360px] lg:w-[350px] lg:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center my-10 sm:my-12 lg:my-0">
+          <div className="relative w-[240px] h-[260px] sm:w-[320px] sm:h-[360px] lg:w-[350px] lg:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center">
             {/* Bottles */}
             <div className="flex items-end justify-center gap-3 sm:gap-6 lg:gap-8 p-4 sm:p-8 lg:p-10">
               {/* Bottle 1 */}
@@ -219,6 +221,7 @@ export default function HomePage() {
 
             {/* Glow Effect */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] sm:w-[350px] lg:w-[400px] h-[250px] sm:h-[350px] lg:h-[400px] bg-gold/15 rounded-full blur-[60px] -z-10" />
+          </div>
           </div>
 
           {/* Decorative Elements - Hidden on mobile, proper spacing from edges */}
