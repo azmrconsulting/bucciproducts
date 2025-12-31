@@ -135,9 +135,12 @@ export default function HomePage() {
 
         {/* Hero Content */}
         <div
-          className="flex flex-col justify-center pt-40 pb-6 sm:pt-44 sm:pb-10 lg:pt-32 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start"
+          className="flex flex-col pt-24 pb-6 sm:pt-32 sm:pb-10 lg:pt-32 lg:pb-16 relative z-[1] text-center lg:text-left items-center lg:items-start"
           style={{ paddingLeft: 'clamp(24px, 5vw, 96px)', paddingRight: 'clamp(24px, 5vw, 96px)' }}
         >
+          {/* Spacer for header clearance */}
+          <div className="h-12 sm:h-16 w-full" aria-hidden="true" />
+
           {/* Badge - Hidden on mobile to reduce clutter */}
           <div className="hidden sm:flex items-center gap-3 mb-8 animate-fadeInUp opacity-0 [animation-delay:0.2s]">
             <span className="w-8 h-[1px] bg-gold" />
@@ -177,7 +180,7 @@ export default function HomePage() {
 
         {/* Hero Visual */}
         <div
-          className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black pt-2 pb-12 sm:py-10 lg:min-h-0 lg:py-0"
+          className="flex items-center justify-center relative bg-gradient-to-br from-charcoal to-black py-10 sm:py-12 lg:min-h-0 lg:py-0"
           style={{ paddingLeft: 'clamp(16px, 4vw, 96px)', paddingRight: 'clamp(16px, 4vw, 96px)' }}
         >
           {/* Pulsing Circle - Hidden on small mobile */}
