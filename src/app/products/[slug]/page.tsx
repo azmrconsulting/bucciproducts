@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Check, Star, Truck, Shield, Leaf } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -34,6 +35,7 @@ export async function generateMetadata({
   const product = await prisma.product.findUnique({
     where: { slug },
     include: {
+      images: { where: { isPrimary: true }, take: 1 },
       reviews: {
         where: { isApproved: true },
         select: { rating: true },
@@ -84,20 +86,29 @@ export async function generateMetadata({
       url: productUrl,
       siteName: "Bucci Products",
       locale: "en_US",
-      images: [
-        {
-          url: `${baseUrl}/og-product.jpg`, // Placeholder - will need actual product images
-          width: 1200,
-          height: 630,
-          alt: product.name,
-        },
-      ],
+      images: product.images[0]?.url
+        ? [
+            {
+              url: product.images[0].url,
+              width: 1200,
+              height: 1200,
+              alt: product.name,
+            },
+          ]
+        : [
+            {
+              url: `${baseUrl}/og-product.jpg`,
+              width: 1200,
+              height: 630,
+              alt: product.name,
+            },
+          ],
     },
     twitter: {
       card: "summary_large_image",
       title: product.name,
       description: product.shortDescription || product.description || "",
-      images: [`${baseUrl}/og-product.jpg`],
+      images: product.images[0]?.url ? [product.images[0].url] : [`${baseUrl}/og-product.jpg`],
     },
     other: {
       "product:price:amount": price,
@@ -180,7 +191,7 @@ export default async function ProductPage({ params }: PageProps) {
     "@type": "Product",
     name: product.name,
     description: product.description,
-    image: `${baseUrl}/og-product.jpg`, // Placeholder
+    image: product.images[0]?.url || `${baseUrl}/og-product.jpg`,
     sku: product.id,
     brand: {
       "@type": "Brand",
@@ -260,21 +271,30 @@ export default async function ProductPage({ params }: PageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-24">
           {/* Product Image */}
           <div className="relative">
-            <div className="aspect-square bg-gradient-to-br from-charcoal to-charcoal-light border border-gold/20 flex items-center justify-center lg:sticky lg:top-28">
+            <div className="aspect-square bg-gradient-to-br from-charcoal to-charcoal-light border border-gold/20 flex items-center justify-center lg:sticky lg:top-28 overflow-hidden">
               {/* Tag */}
               {product.tags.includes("bestseller") && (
-                <span className="absolute top-6 left-6 font-display text-[0.7rem] tracking-[0.15em] uppercase px-4 py-2 bg-gold text-black">
+                <span className="absolute top-6 left-6 z-10 font-display text-[0.7rem] tracking-[0.15em] uppercase px-4 py-2 bg-gold text-black">
                   Bestseller
                 </span>
               )}
               {product.tags.includes("new") && (
-                <span className="absolute top-6 left-6 font-display text-[0.7rem] tracking-[0.15em] uppercase px-4 py-2 bg-gold text-black">
+                <span className="absolute top-6 left-6 z-10 font-display text-[0.7rem] tracking-[0.15em] uppercase px-4 py-2 bg-gold text-black">
                   New
                 </span>
               )}
 
-              {/* Placeholder Bottle - Larger version (or set display) */}
-              {bottleType === "set" ? (
+              {/* Product Image or Placeholder Bottle */}
+              {product.images[0]?.url ? (
+                <Image
+                  src={product.images[0].url}
+                  alt={product.images[0].altText || product.name}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  priority
+                />
+              ) : bottleType === "set" ? (
                 <div className="flex items-end justify-center gap-4 scale-[1.5]">
                   {/* Bottle 1 - Tall */}
                   <div className="flex flex-col items-center">

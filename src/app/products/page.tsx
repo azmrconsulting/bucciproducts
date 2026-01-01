@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 
@@ -97,60 +98,70 @@ export default async function ProductsPage() {
             return (
               <article key={product.id} className="card group">
                 {/* Product Image */}
-                <div className="relative aspect-square bg-gradient-to-br from-charcoal to-charcoal-light flex items-center justify-center">
+                <div className="relative aspect-square bg-gradient-to-br from-charcoal to-charcoal-light flex items-center justify-center overflow-hidden">
                   {tag && (
-                    <span className="absolute top-2 left-2 sm:top-3 sm:left-3 font-display text-[0.55rem] sm:text-[0.6rem] tracking-[0.1em] uppercase px-2 py-1 sm:px-2.5 sm:py-1 bg-gold text-black">
+                    <span className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 font-display text-[0.55rem] sm:text-[0.6rem] tracking-[0.1em] uppercase px-2 py-1 sm:px-2.5 sm:py-1 bg-gold text-black">
                       {tag}
                     </span>
                   )}
-                  {/* Placeholder Bottle or Set */}
-                  <div className="p-6 sm:p-8 lg:p-10">
-                    {bottleType === "set" ? (
-                      <div className="flex items-end justify-center gap-2">
-                        <div className="flex flex-col items-center">
-                          <div className="w-[14px] h-[7px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px] relative">
-                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-[3px] h-[8px] bg-gold rounded-[1px]" />
+                  {/* Product Image or Placeholder Bottle */}
+                  {product.images[0]?.url ? (
+                    <Image
+                      src={product.images[0].url}
+                      alt={product.images[0].altText || product.name}
+                      fill
+                      className="object-cover transition-transform duration-400 group-hover:scale-105"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    />
+                  ) : (
+                    <div className="p-6 sm:p-8 lg:p-10">
+                      {bottleType === "set" ? (
+                        <div className="flex items-end justify-center gap-2">
+                          <div className="flex flex-col items-center">
+                            <div className="w-[14px] h-[7px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px] relative">
+                              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-[3px] h-[8px] bg-gold rounded-[1px]" />
+                            </div>
+                            <div className="w-[22px] h-[60px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded transition-all duration-400 group-hover:border-gold" />
                           </div>
-                          <div className="w-[22px] h-[60px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded transition-all duration-400 group-hover:border-gold" />
-                        </div>
-                        <div className="flex flex-col items-center">
-                          <div className="w-[14px] h-[7px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px] relative">
-                            <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-[3px] h-[8px] bg-gold rounded-[1px]" />
+                          <div className="flex flex-col items-center">
+                            <div className="w-[14px] h-[7px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px] relative">
+                              <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-[3px] h-[8px] bg-gold rounded-[1px]" />
+                            </div>
+                            <div className="w-[22px] h-[60px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded transition-all duration-400 group-hover:border-gold" />
                           </div>
-                          <div className="w-[22px] h-[60px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded transition-all duration-400 group-hover:border-gold" />
+                          <div className="flex flex-col items-center">
+                            <div className="w-[14px] h-[7px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px]" />
+                            <div className="w-[25px] h-[45px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded transition-all duration-400 group-hover:border-gold" />
+                          </div>
+                          <div className="flex flex-col items-center">
+                            <div className="w-[16px] h-[7px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px]" />
+                            <div className="w-[32px] h-[36px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-md transition-all duration-400 group-hover:border-gold" />
+                          </div>
                         </div>
+                      ) : (
                         <div className="flex flex-col items-center">
-                          <div className="w-[14px] h-[7px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px]" />
-                          <div className="w-[25px] h-[45px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded transition-all duration-400 group-hover:border-gold" />
+                          <div
+                            className={`w-[25px] h-[12px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px] ${
+                              bottleType === "tall" ? "relative" : ""
+                            }`}
+                          >
+                            {bottleType === "tall" && (
+                              <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[5px] h-[15px] bg-gold rounded-[2px]" />
+                            )}
+                          </div>
+                          <div
+                            className={`bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 transition-all duration-400 group-hover:border-gold group-hover:shadow-[0_0_30px_rgba(201,169,98,0.2)] ${
+                              bottleType === "serum"
+                                ? "w-[45px] h-[80px] rounded"
+                                : bottleType === "tall"
+                                ? "w-[40px] h-[110px] rounded"
+                                : "w-[60px] h-[65px] rounded-md"
+                            }`}
+                          />
                         </div>
-                        <div className="flex flex-col items-center">
-                          <div className="w-[16px] h-[7px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px]" />
-                          <div className="w-[32px] h-[36px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-md transition-all duration-400 group-hover:border-gold" />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center">
-                        <div
-                          className={`w-[25px] h-[12px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px] ${
-                            bottleType === "tall" ? "relative" : ""
-                          }`}
-                        >
-                          {bottleType === "tall" && (
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-[5px] h-[15px] bg-gold rounded-[2px]" />
-                          )}
-                        </div>
-                        <div
-                          className={`bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 transition-all duration-400 group-hover:border-gold group-hover:shadow-[0_0_30px_rgba(201,169,98,0.2)] ${
-                            bottleType === "serum"
-                              ? "w-[45px] h-[80px] rounded"
-                              : bottleType === "tall"
-                              ? "w-[40px] h-[110px] rounded"
-                              : "w-[60px] h-[65px] rounded-md"
-                          }`}
-                        />
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* Product Info */}
