@@ -97,7 +97,7 @@ export default function ProductDetailImage({ src, alt, bottleType, tag }: Produc
             src={src}
             alt={alt}
             fill
-            className="object-cover"
+            className="object-contain p-4"
             sizes="(max-width: 1024px) 100vw, 50vw"
             priority
             onError={() => setImageError(true)}
