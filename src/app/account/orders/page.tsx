@@ -4,9 +4,16 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Package, ArrowRight, ShoppingBag } from 'lucide-react';
 
-async function getUserOrders(userId: string) {
+async function getUserOrders(userId: string, userEmail?: string | null) {
+  // Find orders by userId OR by email (for orders placed before account creation
+  // or placed without being logged in)
   return prisma.order.findMany({
-    where: { userId },
+    where: {
+      OR: [
+        { userId },
+        ...(userEmail ? [{ email: userEmail }] : []),
+      ],
+    },
     orderBy: { createdAt: 'desc' },
     include: {
       items: {
@@ -33,7 +40,7 @@ export default async function OrdersPage() {
     return null;
   }
 
-  const orders = await getUserOrders(session.user.id);
+  const orders = await getUserOrders(session.user.id, session.user.email);
 
   const formatCurrency = (cents: number) => {
     return new Intl.NumberFormat('en-US', {
