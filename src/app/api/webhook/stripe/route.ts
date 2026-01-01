@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
 import { prisma } from "@/lib/prisma";
+import { sendOrderConfirmationEmail, sendAdminOrderNotification } from "@/lib/email";
 import Stripe from "stripe";
 
 // Disable body parsing - we need raw body for signature verification
@@ -71,6 +72,7 @@ export async function POST(request: NextRequest) {
 async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
   const cartId = session.metadata?.cartId;
   const sessionId = session.metadata?.sessionId;
+  const discountCodeId = session.metadata?.discountCodeId;
 
   if (!cartId) {
     console.error("No cartId in checkout session metadata");
@@ -99,9 +101,15 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
     return sum + (item.product?.priceCents || 0) * item.quantity;
   }, 0);
 
+  // Get discount amount from Stripe session if applied
+  let discountCents = 0;
+  if (session.total_details?.amount_discount) {
+    discountCents = session.total_details.amount_discount;
+  }
+
   const shippingCents = subtotalCents >= 7500 ? 0 : 800;
   const taxCents = 0; // Add tax calculation if needed
-  const totalCents = subtotalCents + shippingCents + taxCents;
+  const totalCents = session.amount_total || (subtotalCents - discountCents + shippingCents + taxCents);
 
   // Generate order number
   const orderNumber = `BUCCI-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
@@ -148,6 +156,7 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
       shippingAddress,
       billingAddress,
       stripePaymentIntentId: session.payment_intent as string,
+      discountCodeId: discountCodeId || null,
       items: {
         create: cart.items
           .filter((item) => item.product)
@@ -161,9 +170,71 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
           })),
       },
     },
+    include: {
+      items: true,
+    },
   });
 
   console.log(`Order created: ${order.orderNumber}`);
+
+  // Update discount code usage count if used
+  if (discountCodeId) {
+    await prisma.discountCode.update({
+      where: { id: discountCodeId },
+      data: { currentUses: { increment: 1 } },
+    });
+    console.log(`Discount code usage incremented: ${discountCodeId}`);
+  }
+
+  // Prepare email data
+  const emailData = {
+    orderNumber: order.orderNumber,
+    email: order.email,
+    items: order.items.map(item => ({
+      name: item.name,
+      quantity: item.quantity,
+      unitPriceCents: item.unitPriceCents,
+      totalCents: item.totalCents,
+    })),
+    subtotalCents: order.subtotalCents,
+    shippingCents: order.shippingCents,
+    discountCents: discountCents > 0 ? discountCents : undefined,
+    taxCents: order.taxCents,
+    totalCents: order.totalCents,
+    shippingAddress: shippingAddress as {
+      name?: string;
+      line1?: string;
+      line2?: string;
+      city?: string;
+      state?: string;
+      postalCode?: string;
+      country?: string;
+    },
+  };
+
+  // Send confirmation email to customer
+  try {
+    const customerEmailResult = await sendOrderConfirmationEmail(emailData);
+    if (customerEmailResult.success) {
+      console.log(`Order confirmation email sent to ${order.email}`);
+    } else {
+      console.error(`Failed to send confirmation email:`, customerEmailResult.error);
+    }
+  } catch (error) {
+    console.error(`Error sending confirmation email:`, error);
+  }
+
+  // Send notification to admin
+  try {
+    const adminEmailResult = await sendAdminOrderNotification(emailData);
+    if (adminEmailResult.success) {
+      console.log(`Admin notification email sent`);
+    } else {
+      console.error(`Failed to send admin notification:`, adminEmailResult.error);
+    }
+  } catch (error) {
+    console.error(`Error sending admin notification:`, error);
+  }
 
   // Clear the cart
   await prisma.cartItem.deleteMany({
