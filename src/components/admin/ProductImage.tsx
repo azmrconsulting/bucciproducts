@@ -19,6 +19,7 @@ export default function ProductImage({ src, alt }: { src?: string; alt: string }
       src={src}
       alt={alt}
       onError={() => setHasError(true)}
+      className="w-full h-full object-contain p-2"
     />
   );
 }
