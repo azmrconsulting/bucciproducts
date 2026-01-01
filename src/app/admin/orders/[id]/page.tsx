@@ -76,36 +76,36 @@ export default async function OrderDetailPage({
     }).format(date);
   };
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      PENDING: 'bg-yellow-100 text-yellow-800',
-      CONFIRMED: 'bg-blue-100 text-blue-800',
-      PROCESSING: 'bg-purple-100 text-purple-800',
-      SHIPPED: 'bg-indigo-100 text-indigo-800',
-      DELIVERED: 'bg-green-100 text-green-800',
-      CANCELLED: 'bg-red-100 text-red-800',
-      REFUNDED: 'bg-gray-100 text-gray-800',
+  const getStatusBadge = (status: string) => {
+    const badges: Record<string, string> = {
+      PENDING: 'admin-badge-pending',
+      CONFIRMED: 'admin-badge-confirmed',
+      PROCESSING: 'admin-badge-processing',
+      SHIPPED: 'admin-badge-shipped',
+      DELIVERED: 'admin-badge-delivered',
+      CANCELLED: 'admin-badge-cancelled',
+      REFUNDED: 'admin-badge-refunded',
     };
-    return colors[status] || 'bg-gray-100 text-gray-800';
+    return badges[status] || 'admin-badge-inactive';
   };
 
   return (
-    <div className="space-y-6">
+    <div>
       {/* Header */}
-      <div>
+      <div className="mb-6">
         <Link
           href="/admin/orders"
-          className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4"
+          className="inline-flex items-center gap-2 text-gray hover:text-ivory transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Orders
         </Link>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Order {order.orderNumber}</h1>
-            <p className="text-gray-600 mt-1">{formatDate(order.createdAt)}</p>
+            <h1 className="admin-page-title">Order {order.orderNumber}</h1>
+            <p className="admin-page-subtitle">{formatDate(order.createdAt)}</p>
           </div>
-          <span className={`px-4 py-2 rounded-full text-sm font-semibold ${getStatusColor(order.status)}`}>
+          <span className={`admin-badge ${getStatusBadge(order.status)}`}>
             {order.status}
           </span>
         </div>
@@ -115,98 +115,98 @@ export default async function OrderDetailPage({
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
           {/* Order Items */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Order Items</h2>
+          <div className="admin-card">
+            <div className="admin-card-header">
+              <h2 className="admin-card-title">Order Items</h2>
             </div>
-            <div className="p-6">
+            <div className="admin-card-body">
               <div className="space-y-4">
                 {order.items.map((item) => (
-                  <div key={item.id} className="flex items-center gap-4 pb-4 border-b border-gray-200 last:border-0">
+                  <div key={item.id} className="flex items-center gap-4 pb-4 border-b border-white/10 last:border-0 last:pb-0">
                     <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">
+                      <h3 className="font-medium text-ivory">
                         {item.product?.name || item.bundle?.name}
                         {item.variant && ` - ${item.variant.name}`}
                       </h3>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray">
                         SKU: {item.variant?.sku || item.product?.sku || 'N/A'}
                       </p>
-                      <p className="text-sm text-gray-600 mt-1">
+                      <p className="text-sm text-gray mt-1">
                         Quantity: {item.quantity}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-500">{formatCurrency(item.unitPriceCents)} each</p>
-                      <p className="font-semibold text-gray-900">{formatCurrency(item.totalCents)}</p>
+                      <p className="text-sm text-gray">{formatCurrency(item.unitPriceCents)} each</p>
+                      <p className="font-semibold text-gold">{formatCurrency(item.totalCents)}</p>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Order Totals */}
-              <div className="mt-6 pt-6 border-t border-gray-200 space-y-2">
+              <div className="mt-6 pt-6 border-t border-white/10 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="text-gray-900">{formatCurrency(order.subtotalCents)}</span>
+                  <span className="text-gray">Subtotal</span>
+                  <span className="text-ivory">{formatCurrency(order.subtotalCents)}</span>
                 </div>
                 {order.discountCents > 0 && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">
+                    <span className="text-gray">
                       Discount
                       {order.discountCode && ` (${order.discountCode.code})`}
                     </span>
-                    <span className="text-green-600">-{formatCurrency(order.discountCents)}</span>
+                    <span className="text-green-400">-{formatCurrency(order.discountCents)}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Shipping</span>
-                  <span className="text-gray-900">{formatCurrency(order.shippingCents)}</span>
+                  <span className="text-gray">Shipping</span>
+                  <span className="text-ivory">{formatCurrency(order.shippingCents)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Tax</span>
-                  <span className="text-gray-900">{formatCurrency(order.taxCents)}</span>
+                  <span className="text-gray">Tax</span>
+                  <span className="text-ivory">{formatCurrency(order.taxCents)}</span>
                 </div>
-                <div className="flex justify-between text-lg font-semibold pt-2 border-t border-gray-200">
-                  <span className="text-gray-900">Total</span>
-                  <span className="text-gray-900">{formatCurrency(order.totalCents)}</span>
+                <div className="flex justify-between text-lg font-semibold pt-2 border-t border-white/10">
+                  <span className="text-ivory">Total</span>
+                  <span className="text-gold">{formatCurrency(order.totalCents)}</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Shipping Address */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Shipping Address</h2>
+          <div className="admin-card">
+            <div className="admin-card-header">
+              <h2 className="admin-card-title">Shipping Address</h2>
             </div>
-            <div className="p-6">
-              <div className="text-sm text-gray-900">
-                <p className="font-medium">{(order.shippingAddress as any)?.name}</p>
-                <p className="mt-2">{(order.shippingAddress as any)?.line1}</p>
-                {(order.shippingAddress as any)?.line2 && <p>{(order.shippingAddress as any)?.line2}</p>}
-                <p>
+            <div className="admin-card-body">
+              <div className="text-sm">
+                <p className="font-medium text-ivory">{(order.shippingAddress as any)?.name}</p>
+                <p className="mt-2 text-gray">{(order.shippingAddress as any)?.line1}</p>
+                {(order.shippingAddress as any)?.line2 && <p className="text-gray">{(order.shippingAddress as any)?.line2}</p>}
+                <p className="text-gray">
                   {(order.shippingAddress as any)?.city}, {(order.shippingAddress as any)?.state} {(order.shippingAddress as any)?.postal_code}
                 </p>
-                <p>{(order.shippingAddress as any)?.country}</p>
+                <p className="text-gray">{(order.shippingAddress as any)?.country}</p>
               </div>
             </div>
           </div>
 
           {/* Billing Address */}
           {order.billingAddress && (
-            <div className="bg-white rounded-lg shadow">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900">Billing Address</h2>
+            <div className="admin-card">
+              <div className="admin-card-header">
+                <h2 className="admin-card-title">Billing Address</h2>
               </div>
-              <div className="p-6">
-                <div className="text-sm text-gray-900">
-                  <p className="font-medium">{(order.billingAddress as any)?.name}</p>
-                  <p className="mt-2">{(order.billingAddress as any)?.line1}</p>
-                  {(order.billingAddress as any)?.line2 && <p>{(order.billingAddress as any)?.line2}</p>}
-                  <p>
+              <div className="admin-card-body">
+                <div className="text-sm">
+                  <p className="font-medium text-ivory">{(order.billingAddress as any)?.name}</p>
+                  <p className="mt-2 text-gray">{(order.billingAddress as any)?.line1}</p>
+                  {(order.billingAddress as any)?.line2 && <p className="text-gray">{(order.billingAddress as any)?.line2}</p>}
+                  <p className="text-gray">
                     {(order.billingAddress as any)?.city}, {(order.billingAddress as any)?.state} {(order.billingAddress as any)?.postal_code}
                   </p>
-                  <p>{(order.billingAddress as any)?.country}</p>
+                  <p className="text-gray">{(order.billingAddress as any)?.country}</p>
                 </div>
               </div>
             </div>
@@ -216,40 +216,40 @@ export default async function OrderDetailPage({
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Customer Info */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Customer</h2>
+          <div className="admin-card">
+            <div className="admin-card-header">
+              <h2 className="admin-card-title">Customer</h2>
             </div>
-            <div className="p-6">
+            <div className="admin-card-body">
               {order.user ? (
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-gray-500">Name</p>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-xs text-gray uppercase tracking-wider">Name</p>
+                    <p className="text-sm font-medium text-ivory">
                       {order.user.firstName} {order.user.lastName}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Email</p>
-                    <p className="text-sm text-gray-900">{order.user.email}</p>
+                    <p className="text-xs text-gray uppercase tracking-wider">Email</p>
+                    <p className="text-sm text-ivory">{order.user.email}</p>
                   </div>
                   {order.user.phone && (
                     <div>
-                      <p className="text-sm text-gray-500">Phone</p>
-                      <p className="text-sm text-gray-900">{order.user.phone}</p>
+                      <p className="text-xs text-gray uppercase tracking-wider">Phone</p>
+                      <p className="text-sm text-ivory">{order.user.phone}</p>
                     </div>
                   )}
                   <Link
                     href={`/admin/users/${order.user.id}`}
-                    className="inline-block mt-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                    className="admin-td-link inline-block mt-2"
                   >
                     View Customer Profile
                   </Link>
                 </div>
               ) : (
                 <div>
-                  <p className="text-sm text-gray-500">Guest Checkout</p>
-                  <p className="text-sm text-gray-900 mt-1">{order.email}</p>
+                  <p className="text-xs text-gray uppercase tracking-wider">Guest Checkout</p>
+                  <p className="text-sm text-ivory mt-1">{order.email}</p>
                 </div>
               )}
             </div>
@@ -259,28 +259,28 @@ export default async function OrderDetailPage({
           <OrderStatusUpdate order={order} />
 
           {/* Payment Info */}
-          <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-semibold text-gray-900">Payment</h2>
+          <div className="admin-card">
+            <div className="admin-card-header">
+              <h2 className="admin-card-title">Payment</h2>
             </div>
-            <div className="p-6">
+            <div className="admin-card-body">
               <div className="space-y-3">
                 <div>
-                  <p className="text-sm text-gray-500">Payment Method</p>
-                  <p className="text-sm font-medium text-gray-900">Stripe</p>
+                  <p className="text-xs text-gray uppercase tracking-wider">Payment Method</p>
+                  <p className="text-sm font-medium text-ivory">Stripe</p>
                 </div>
                 {order.stripePaymentIntentId && (
                   <div>
-                    <p className="text-sm text-gray-500">Payment Intent ID</p>
-                    <p className="text-xs text-gray-900 font-mono break-all">
+                    <p className="text-xs text-gray uppercase tracking-wider">Payment Intent ID</p>
+                    <p className="text-xs text-ivory font-mono break-all">
                       {order.stripePaymentIntentId}
                     </p>
                   </div>
                 )}
                 {order.stripeChargeId && (
                   <div>
-                    <p className="text-sm text-gray-500">Stripe Charge ID</p>
-                    <p className="text-xs text-gray-900 font-mono break-all">
+                    <p className="text-xs text-gray uppercase tracking-wider">Stripe Charge ID</p>
+                    <p className="text-xs text-ivory font-mono break-all">
                       {order.stripeChargeId}
                     </p>
                   </div>
