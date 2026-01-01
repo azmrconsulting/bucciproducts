@@ -56,6 +56,7 @@ export default async function AccountPage() {
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
       month: 'short',
       day: 'numeric',
       year: 'numeric',

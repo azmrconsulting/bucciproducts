@@ -32,6 +32,7 @@ export default async function DiscountsPage() {
   const formatDate = (date: Date | null) => {
     if (!date) return 'N/A';
     return new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York',
       month: 'short',
       day: 'numeric',
       year: 'numeric',
