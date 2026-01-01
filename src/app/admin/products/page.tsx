@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Plus, Search } from 'lucide-react';
+import ProductImage from '@/components/admin/ProductImage';
 
 export const dynamic = 'force-dynamic';
 
@@ -94,14 +95,7 @@ export default async function ProductsPage({
             >
               {/* Product Image */}
               <div className="admin-product-image">
-                {product.images[0] ? (
-                  <img
-                    src={product.images[0].url}
-                    alt={product.name}
-                  />
-                ) : (
-                  <span>No Image</span>
-                )}
+                <ProductImage src={product.images[0]?.url} alt={product.name} />
               </div>
 
               {/* Product Info */}
