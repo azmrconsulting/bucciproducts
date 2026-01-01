@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Upload, X, Image as ImageIcon } from 'lucide-react';
 
 type ProductFormData = {
   sku: string;
@@ -40,6 +40,10 @@ export default function ProductForm({ product }: { product?: any }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<ProductFormData>({
     sku: product?.sku || '',
     name: product?.name || '',
@@ -91,6 +95,66 @@ export default function ProductForm({ product }: { product?: any }) {
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/^-|-$/g, '');
       setFormData((prev) => ({ ...prev, slug }));
+    }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true);
+    setUploadError('');
+
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const response = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formDataUpload,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Upload failed');
+      }
+
+      const data = await response.json();
+      setFormData((prev) => ({ ...prev, imageUrl: data.url }));
+    } catch (err: any) {
+      setUploadError(err.message);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileUpload(file);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      handleFileUpload(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const removeImage = () => {
+    setFormData((prev) => ({ ...prev, imageUrl: '' }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -271,31 +335,70 @@ export default function ProductForm({ product }: { product?: any }) {
               </div>
 
               <div className="md:col-span-2">
-                <label htmlFor="imageUrl" className="admin-form-label">
-                  Product Image URL
+                <label className="admin-form-label">
+                  Product Image
                 </label>
-                <input
-                  type="url"
-                  id="imageUrl"
-                  name="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={handleChange}
-                  placeholder="https://example.com/image.jpg"
-                  className="admin-form-input"
-                />
-                <p className="text-xs text-gray mt-1">Direct URL to product image (use Cloudinary, S3, or similar hosting)</p>
-                {formData.imageUrl && (
-                  <div className="mt-3 p-3 bg-white/5 rounded-lg">
-                    <p className="text-xs text-gray mb-2">Preview:</p>
+
+                {formData.imageUrl ? (
+                  <div className="mt-2 relative inline-block">
                     <img
                       src={formData.imageUrl}
                       alt="Product preview"
-                      className="max-w-[200px] max-h-[200px] object-contain rounded"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                      }}
+                      className="max-w-[300px] max-h-[300px] object-contain rounded-lg border border-white/10"
                     />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute -top-2 -right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
                   </div>
+                ) : (
+                  <div
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onClick={() => fileInputRef.current?.click()}
+                    className={`mt-2 border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                      isDragging
+                        ? 'border-gold bg-gold/10'
+                        : 'border-white/20 hover:border-gold/50 hover:bg-white/5'
+                    }`}
+                  >
+                    {isUploading ? (
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="w-10 h-10 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+                        <p className="text-sm text-gray">Uploading...</p>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex justify-center mb-3">
+                          <div className="p-3 bg-white/5 rounded-full">
+                            <ImageIcon className="w-8 h-8 text-gray" />
+                          </div>
+                        </div>
+                        <p className="text-sm text-ivory mb-1">
+                          Drag and drop an image, or click to browse
+                        </p>
+                        <p className="text-xs text-gray">
+                          JPEG, PNG, WebP, or GIF (max 10MB)
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                />
+
+                {uploadError && (
+                  <p className="text-sm text-red-400 mt-2">{uploadError}</p>
                 )}
               </div>
 

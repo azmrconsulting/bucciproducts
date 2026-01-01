@@ -220,5 +220,22 @@ src/
 - **Database**: Prisma with PostgreSQL
 - **Auth**: NextAuth.js
 - **Payments**: Stripe
+- **Images**: Cloudinary
 - **Icons**: lucide-react
 - **Styling**: Tailwind CSS + Custom CSS
+
+---
+
+## Environment Variables
+
+### Required for Image Uploads (Cloudinary)
+```
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+**Setup:**
+1. Create a free account at [cloudinary.com](https://cloudinary.com)
+2. Go to Dashboard → copy Cloud Name, API Key, API Secret
+3. Add to `.env` file and Vercel environment variables
