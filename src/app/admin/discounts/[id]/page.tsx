@@ -21,9 +21,10 @@ async function getDiscountCode(id: string) {
 export default async function EditDiscountCodePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const discountCode = await getDiscountCode(params.id);
+  const { id } = await params;
+  const discountCode = await getDiscountCode(id);
 
   return (
     <div className="space-y-6">

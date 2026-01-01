@@ -54,9 +54,10 @@ async function getOrder(id: string) {
 export default async function OrderDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const order = await getOrder(params.id);
+  const { id } = await params;
+  const order = await getOrder(id);
 
   const formatCurrency = (cents: number) => {
     return new Intl.NumberFormat('en-US', {

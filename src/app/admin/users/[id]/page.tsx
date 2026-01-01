@@ -49,9 +49,10 @@ async function getUser(id: string) {
 export default async function UserDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const user = await getUser(params.id);
+  const { id } = await params;
+  const user = await getUser(id);
 
   const formatCurrency = (cents: number) => {
     return new Intl.NumberFormat('en-US', {
