@@ -8,6 +8,7 @@ const productSchema = z.object({
   sku: z.string().min(1),
   name: z.string().min(1),
   slug: z.string().min(1),
+  shortDescription: z.string().optional(),
   description: z.string().optional(),
   priceCents: z.number().int().min(0),
   compareAtPriceCents: z.number().int().min(0).nullable().optional(),
@@ -17,6 +18,7 @@ const productSchema = z.object({
   isFeatured: z.boolean().optional(),
   isActive: z.boolean().optional(),
   weightGrams: z.number().nullable().optional(),
+  imageUrl: z.string().url().optional().or(z.literal('')),
   inventory: z.object({
     quantity: z.number().int().min(0),
     reservedQuantity: z.number().int().min(0).optional(),
@@ -42,7 +44,7 @@ export async function PUT(
 
     const product = await prisma.product.findUnique({
       where: { id: id },
-      include: { inventory: true },
+      include: { inventory: true, images: true },
     });
 
     if (!product) {
@@ -77,14 +79,31 @@ export async function PUT(
       );
     }
 
-    const { inventory, ...productData } = validatedData;
+    const { inventory, imageUrl, ...productData } = validatedData;
 
     // Update product and inventory
     const updatedProduct = await prisma.product.update({
       where: { id: id },
       data: productData,
-      include: { inventory: true },
+      include: { inventory: true, images: true },
     });
+
+    // Handle image update
+    if (imageUrl !== undefined) {
+      // Delete existing images and create new one if URL provided
+      await prisma.productImage.deleteMany({ where: { productId: id } });
+      if (imageUrl) {
+        await prisma.productImage.create({
+          data: {
+            productId: id,
+            url: imageUrl,
+            altText: productData.name,
+            position: 0,
+            isPrimary: true,
+          },
+        });
+      }
+    }
 
     // Update or create inventory
     if (inventory) {
@@ -109,10 +128,10 @@ export async function PUT(
       }
     }
 
-    // Fetch updated product with inventory
+    // Fetch updated product with inventory and images
     const finalProduct = await prisma.product.findUnique({
       where: { id: id },
-      include: { inventory: true },
+      include: { inventory: true, images: true },
     });
 
     return NextResponse.json(finalProduct);

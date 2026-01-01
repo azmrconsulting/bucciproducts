@@ -8,7 +8,9 @@ type ProductFormData = {
   sku: string;
   name: string;
   slug: string;
+  shortDescription: string;
   description: string;
+  imageUrl: string;
   price: string;
   compareAtPrice: string;
   cost: string;
@@ -42,7 +44,9 @@ export default function ProductForm({ product }: { product?: any }) {
     sku: product?.sku || '',
     name: product?.name || '',
     slug: product?.slug || '',
+    shortDescription: product?.shortDescription || '',
     description: product?.description || '',
+    imageUrl: product?.images?.[0]?.url || '',
     price: product?.priceCents ? (product.priceCents / 100).toFixed(2) : '',
     compareAtPrice: product?.compareAtPriceCents ? (product.compareAtPriceCents / 100).toFixed(2) : '',
     cost: product?.costCents ? (product.costCents / 100).toFixed(2) : '',
@@ -100,7 +104,9 @@ export default function ProductForm({ product }: { product?: any }) {
         sku: formData.sku,
         name: formData.name,
         slug: formData.slug,
+        shortDescription: formData.shortDescription || undefined,
         description: formData.description,
+        imageUrl: formData.imageUrl || '',
         priceCents: Math.round(parseFloat(formData.price) * 100),
         compareAtPriceCents: formData.compareAtPrice
           ? Math.round(parseFloat(formData.compareAtPrice) * 100)
@@ -204,6 +210,22 @@ export default function ProductForm({ product }: { product?: any }) {
                 />
               </div>
 
+              <div className="md:col-span-2">
+                <label htmlFor="shortDescription" className="admin-form-label">
+                  Short Description / Subtitle
+                </label>
+                <input
+                  type="text"
+                  id="shortDescription"
+                  name="shortDescription"
+                  value={formData.shortDescription}
+                  onChange={handleChange}
+                  placeholder="e.g., Luxurious daily care for all hair types"
+                  className="admin-form-input"
+                />
+                <p className="text-xs text-gray mt-1">Displayed below the product name on cards</p>
+              </div>
+
               <div>
                 <label htmlFor="sku" className="admin-form-label">
                   SKU *
@@ -246,6 +268,35 @@ export default function ProductForm({ product }: { product?: any }) {
                   rows={4}
                   className="admin-form-input resize-y"
                 />
+              </div>
+
+              <div className="md:col-span-2">
+                <label htmlFor="imageUrl" className="admin-form-label">
+                  Product Image URL
+                </label>
+                <input
+                  type="url"
+                  id="imageUrl"
+                  name="imageUrl"
+                  value={formData.imageUrl}
+                  onChange={handleChange}
+                  placeholder="https://example.com/image.jpg"
+                  className="admin-form-input"
+                />
+                <p className="text-xs text-gray mt-1">Direct URL to product image (use Cloudinary, S3, or similar hosting)</p>
+                {formData.imageUrl && (
+                  <div className="mt-3 p-3 bg-white/5 rounded-lg">
+                    <p className="text-xs text-gray mb-2">Preview:</p>
+                    <img
+                      src={formData.imageUrl}
+                      alt="Product preview"
+                      className="max-w-[200px] max-h-[200px] object-contain rounded"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div>

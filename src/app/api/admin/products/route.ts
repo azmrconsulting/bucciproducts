@@ -8,6 +8,7 @@ const productSchema = z.object({
   sku: z.string().min(1),
   name: z.string().min(1),
   slug: z.string().min(1),
+  shortDescription: z.string().optional(),
   description: z.string().optional(),
   priceCents: z.number().int().min(0),
   compareAtPriceCents: z.number().int().min(0).nullable().optional(),
@@ -17,6 +18,7 @@ const productSchema = z.object({
   isFeatured: z.boolean().optional(),
   isActive: z.boolean().optional(),
   weightGrams: z.number().nullable().optional(),
+  imageUrl: z.string().url().optional().or(z.literal('')),
   inventory: z.object({
     quantity: z.number().int().min(0),
     reservedQuantity: z.number().int().min(0).optional(),
@@ -55,7 +57,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { inventory, ...productData } = validatedData;
+    const { inventory, imageUrl, ...productData } = validatedData;
 
     const product = await prisma.product.create({
       data: {
@@ -67,9 +69,18 @@ export async function POST(request: NextRequest) {
             allowBackorder: inventory.allowBackorder || false,
           },
         } : undefined,
+        images: imageUrl ? {
+          create: {
+            url: imageUrl,
+            altText: productData.name,
+            position: 0,
+            isPrimary: true,
+          },
+        } : undefined,
       },
       include: {
         inventory: true,
+        images: true,
       },
     });
 
