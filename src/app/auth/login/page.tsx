@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { signIn } from "next-auth/react";
+import { useState, Suspense, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
@@ -9,6 +9,7 @@ import { Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const error = searchParams.get("error");
 
@@ -16,6 +17,14 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // If already logged in, redirect to callback URL
+  useEffect(() => {
+    if (status === "authenticated" && session) {
+      router.push(callbackUrl);
+    }
+  }, [status, session, router, callbackUrl]);
+
   const getInitialError = () => {
     if (error === "CredentialsSignin") return "Invalid email or password";
     if (error === "AdminAccessRequired") return "Admin access required. Please sign in with an admin account.";
@@ -23,6 +32,18 @@ function LoginForm() {
   };
 
   const [errorMessage, setErrorMessage] = useState(getInitialError());
+
+  // Show loading while checking session
+  if (status === "loading" || (status === "authenticated" && session)) {
+    return (
+      <main className="min-h-screen bg-black flex items-center justify-center px-4 py-20">
+        <div className="geo-pattern" />
+        <div className="flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin" />
+        </div>
+      </main>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
