@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Check, Star, Mail, Instagram, Send } from "lucide-react";
+import { ArrowRight, Check, Star, Mail, Instagram } from "lucide-react";
 import type { Metadata } from "next";
+import ContactForm from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   alternates: {
@@ -597,59 +598,7 @@ export default function HomePage() {
             </div>
 
             {/* Contact Form */}
-            <form className="flex flex-col gap-5 sm:gap-6 lg:gap-8">
-              <div className="form-group">
-                <label htmlFor="name" className="form-label">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  className="form-input"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="email" className="form-label">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  className="form-input"
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="subject" className="form-label">
-                  Subject
-                </label>
-                <select id="subject" name="subject" className="form-select">
-                  <option value="general">General Inquiry</option>
-                  <option value="order">Order Question</option>
-                  <option value="wholesale">Wholesale/Stockist</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label htmlFor="message" className="form-label">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={4}
-                  required
-                  className="form-textarea"
-                />
-              </div>
-              <button type="submit" className="btn btn-primary btn-large">
-                <span>Send Message</span>
-                <Send className="w-5 h-5" />
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </section>
