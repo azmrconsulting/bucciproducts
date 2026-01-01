@@ -2,7 +2,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
-import { Package, ArrowRight, ShoppingBag } from 'lucide-react';
+import { ArrowRight, ShoppingBag } from 'lucide-react';
 
 async function getUserOrders(userId: string, userEmail?: string | null) {
   // Find orders by userId OR by email (for orders placed before account creation
@@ -115,28 +115,37 @@ export default async function OrdersPage() {
               {/* Order Items Preview */}
               <div className="p-4 sm:p-6">
                 <div className="flex flex-wrap gap-3 mb-4">
-                  {order.items.slice(0, 4).map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center gap-3 p-2 bg-white/[0.02] rounded-lg"
-                    >
-                      <div className="w-12 h-12 bg-charcoal rounded flex items-center justify-center">
-                        {item.product?.images?.[0]?.url ? (
-                          <img
-                            src={item.product.images[0].url}
-                            alt={item.name}
-                            className="w-full h-full object-cover rounded"
-                          />
-                        ) : (
-                          <Package className="w-6 h-6 text-gray/50" />
-                        )}
+                  {order.items.slice(0, 4).map((item) => {
+                    const imageUrl = item.product?.images?.[0]?.url;
+                    const hasValidImage = imageUrl && imageUrl.startsWith('http');
+
+                    return (
+                      <div
+                        key={item.id}
+                        className="flex items-center gap-3 p-2 bg-white/[0.02] rounded-lg"
+                      >
+                        <div className="w-12 h-12 bg-gradient-to-br from-charcoal to-black rounded flex items-center justify-center">
+                          {hasValidImage ? (
+                            <img
+                              src={imageUrl}
+                              alt={item.name}
+                              className="w-full h-full object-cover rounded"
+                            />
+                          ) : (
+                            /* Bottle placeholder */
+                            <div className="flex flex-col items-center scale-50">
+                              <div className="w-[20px] h-[8px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[2px]" />
+                              <div className="w-[32px] h-[50px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded" />
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-ivory text-sm line-clamp-1">{item.name}</p>
+                          <p className="text-gray text-xs">Qty: {item.quantity}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-ivory text-sm line-clamp-1">{item.name}</p>
-                        <p className="text-gray text-xs">Qty: {item.quantity}</p>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   {order.items.length > 4 && (
                     <div className="flex items-center justify-center w-12 h-12 bg-white/[0.02] rounded-lg">
                       <span className="text-gray text-sm">+{order.items.length - 4}</span>
