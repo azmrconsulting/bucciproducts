@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { ArrowLeft, ArrowRight, Minus, Plus, Trash2, ShoppingBag, Tag, X, Check } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 // Determine bottle type based on category for visual display
@@ -20,7 +21,43 @@ function getBottleType(category: string | null): "serum" | "tall" | "wide" {
 }
 
 export default function CartPage() {
-  const { items, itemCount, totalPrice, isLoading, updateQuantity, removeFromCart } = useCart();
+  const {
+    items,
+    itemCount,
+    totalPrice,
+    isLoading,
+    updateQuantity,
+    removeFromCart,
+    discount,
+    discountAmount,
+    finalTotal,
+    shippingCost,
+    applyDiscount,
+    removeDiscount,
+  } = useCart();
+
+  const [promoCode, setPromoCode] = useState("");
+  const [promoError, setPromoError] = useState("");
+  const [isApplyingPromo, setIsApplyingPromo] = useState(false);
+  const [showPromoInput, setShowPromoInput] = useState(false);
+
+  const handleApplyPromo = async () => {
+    if (!promoCode.trim()) return;
+
+    setIsApplyingPromo(true);
+    setPromoError("");
+
+    const result = await applyDiscount(promoCode.trim());
+
+    if (!result.success) {
+      setPromoError(result.error || "Invalid code");
+    } else {
+      setPromoCode("");
+      setShowPromoInput(false);
+    }
+
+    setIsApplyingPromo(false);
+  };
 
   if (isLoading) {
     return (
@@ -171,14 +208,101 @@ export default function CartPage() {
                   <span>Subtotal</span>
                   <span>${totalPrice.toFixed(0)}</span>
                 </div>
+
+                {/* Discount Display */}
+                {discount && (
+                  <div className="flex justify-between items-center text-green-400">
+                    <div className="flex items-center gap-2">
+                      <Tag className="w-4 h-4" />
+                      <span className="text-sm">{discount.code}</span>
+                      <button
+                        onClick={removeDiscount}
+                        className="text-gray hover:text-red-400 transition-colors"
+                        aria-label="Remove discount"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <span>-${discountAmount.toFixed(0)}</span>
+                  </div>
+                )}
+
                 <div className="flex justify-between text-gray">
                   <span>Shipping</span>
-                  <span>{totalPrice >= 75 ? "Free" : "$8"}</span>
+                  <span>{shippingCost === 0 ? "Free" : `$${shippingCost}`}</span>
                 </div>
-                {totalPrice < 75 && (
+
+                {!discount?.type && totalPrice < 75 && shippingCost > 0 && (
                   <p className="text-xs text-gold">
                     Add ${(75 - totalPrice).toFixed(0)} more for free shipping!
                   </p>
+                )}
+
+                {discount?.type === "FREE_SHIPPING" && (
+                  <p className="text-xs text-green-400 flex items-center gap-1">
+                    <Check className="w-3 h-3" />
+                    Free shipping applied!
+                  </p>
+                )}
+              </div>
+
+              {/* Promo Code Section */}
+              <div className="border-t border-white/10 pt-4 mb-4">
+                {!discount ? (
+                  <>
+                    {!showPromoInput ? (
+                      <button
+                        onClick={() => setShowPromoInput(true)}
+                        className="flex items-center gap-2 text-sm text-gold hover:text-gold-light transition-colors"
+                      >
+                        <Tag className="w-4 h-4" />
+                        <span>Have a promo code?</span>
+                      </button>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={promoCode}
+                            onChange={(e) => {
+                              setPromoCode(e.target.value.toUpperCase());
+                              setPromoError("");
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") handleApplyPromo();
+                            }}
+                            placeholder="Enter code"
+                            className="flex-1 px-3 py-2 bg-black/50 border border-white/10 text-ivory text-sm placeholder:text-gray/50 focus:outline-none focus:border-gold/50"
+                          />
+                          <button
+                            onClick={handleApplyPromo}
+                            disabled={isApplyingPromo || !promoCode.trim()}
+                            className="px-4 py-2 bg-gold text-black text-sm font-medium hover:bg-gold-light disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                          >
+                            {isApplyingPromo ? "..." : "Apply"}
+                          </button>
+                        </div>
+                        {promoError && (
+                          <p className="text-xs text-red-400">{promoError}</p>
+                        )}
+                        <button
+                          onClick={() => {
+                            setShowPromoInput(false);
+                            setPromoCode("");
+                            setPromoError("");
+                          }}
+                          className="text-xs text-gray hover:text-ivory transition-colors"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="flex items-center gap-2 text-sm text-green-400">
+                    <Check className="w-4 h-4" />
+                    <span>{discount.description} applied</span>
+                  </div>
                 )}
               </div>
 
@@ -186,7 +310,7 @@ export default function CartPage() {
                 <div className="flex justify-between items-center">
                   <span className="font-display text-base sm:text-lg text-ivory">Total</span>
                   <span className="font-display text-xl sm:text-2xl text-gold">
-                    ${(totalPrice + (totalPrice >= 75 ? 0 : 8)).toFixed(0)}
+                    ${finalTotal.toFixed(0)}
                   </span>
                 </div>
               </div>

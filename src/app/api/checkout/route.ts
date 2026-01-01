@@ -29,16 +29,72 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
 
-    // Get email from request body (optional)
+    // Get request body
     const body = await request.json().catch(() => ({}));
     const customerEmail = body.email;
+    const discountCode = body.discountCode;
 
-    // Calculate totals
+    // Calculate subtotal
     const subtotalCents = cart.items.reduce((sum, item) => {
       return sum + (item.product?.priceCents || 0) * item.quantity;
     }, 0);
 
-    const shippingCents = subtotalCents >= 7500 ? 0 : 800; // Free shipping over $75
+    // Validate discount code if provided
+    let validDiscount: {
+      id: string;
+      code: string;
+      type: string;
+      value: number;
+      discountAmountCents: number;
+    } | null = null;
+
+    if (discountCode) {
+      const discount = await prisma.discountCode.findFirst({
+        where: {
+          code: {
+            equals: discountCode.toUpperCase(),
+            mode: "insensitive",
+          },
+        },
+      });
+
+      if (discount && discount.isActive) {
+        // Validate all conditions
+        const now = new Date();
+        const isValid =
+          (!discount.startsAt || now >= discount.startsAt) &&
+          (!discount.expiresAt || now <= discount.expiresAt) &&
+          (!discount.maxUses || discount.currentUses < discount.maxUses) &&
+          (!discount.minimumOrderCents || subtotalCents >= discount.minimumOrderCents);
+
+        if (isValid) {
+          let discountAmountCents = 0;
+          switch (discount.type) {
+            case "PERCENTAGE":
+              discountAmountCents = Math.round((subtotalCents * discount.value) / 100);
+              break;
+            case "FIXED_AMOUNT":
+              discountAmountCents = Math.min(discount.value, subtotalCents);
+              break;
+            case "FREE_SHIPPING":
+              discountAmountCents = 0;
+              break;
+          }
+
+          validDiscount = {
+            id: discount.id,
+            code: discount.code,
+            type: discount.type,
+            value: discount.value,
+            discountAmountCents,
+          };
+        }
+      }
+    }
+
+    // Calculate shipping
+    const freeShipping = validDiscount?.type === "FREE_SHIPPING" || subtotalCents >= 7500;
+    const shippingCents = freeShipping ? 0 : 800;
 
     // Create line items for Stripe
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = cart.items
@@ -70,8 +126,8 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Create Stripe checkout session
-    const checkoutSession = await stripe.checkout.sessions.create({
+    // Prepare checkout session params
+    const checkoutParams: Stripe.Checkout.SessionCreateParams = {
       mode: "payment",
       payment_method_types: ["card"],
       line_items: lineItems,
@@ -81,12 +137,30 @@ export async function POST(request: NextRequest) {
       metadata: {
         cartId: cart.id,
         sessionId: sessionId,
+        discountCodeId: validDiscount?.id || "",
+        discountCode: validDiscount?.code || "",
       },
       shipping_address_collection: {
         allowed_countries: ["US", "CA", "GB", "AU"],
       },
       billing_address_collection: "required",
-    });
+    };
+
+    // Apply discount using Stripe coupons
+    if (validDiscount && validDiscount.discountAmountCents > 0) {
+      // Create a one-time coupon in Stripe
+      const coupon = await stripe.coupons.create({
+        amount_off: validDiscount.discountAmountCents,
+        currency: "usd",
+        duration: "once",
+        name: `Discount: ${validDiscount.code}`,
+      });
+
+      checkoutParams.discounts = [{ coupon: coupon.id }];
+    }
+
+    // Create Stripe checkout session
+    const checkoutSession = await stripe.checkout.sessions.create(checkoutParams);
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (error) {

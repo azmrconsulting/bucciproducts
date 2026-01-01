@@ -3,12 +3,20 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { ArrowLeft, Lock } from "lucide-react";
+import { ArrowLeft, Lock, Tag, Check } from "lucide-react";
 import Link from "next/link";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { items, totalPrice, isLoading: cartLoading } = useCart();
+  const {
+    items,
+    totalPrice,
+    isLoading: cartLoading,
+    discount,
+    discountAmount,
+    finalTotal,
+    shippingCost,
+  } = useCart();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +35,9 @@ export default function CheckoutPage() {
       const response = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          discountCode: discount?.code || null,
+        }),
       });
 
       const data = await response.json();
@@ -56,9 +67,6 @@ export default function CheckoutPage() {
       </main>
     );
   }
-
-  const shipping = totalPrice >= 75 ? 0 : 8;
-  const total = totalPrice + shipping;
 
   return (
     <main className="min-h-screen bg-charcoal pt-24 sm:pt-32">
@@ -95,13 +103,33 @@ export default function CheckoutPage() {
               <span>Subtotal</span>
               <span>${totalPrice.toFixed(0)}</span>
             </div>
+
+            {/* Discount Display */}
+            {discount && (
+              <div className="flex justify-between items-center text-green-400">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4" />
+                  <span className="text-sm">{discount.code}</span>
+                </div>
+                <span>-${discountAmount.toFixed(0)}</span>
+              </div>
+            )}
+
             <div className="flex justify-between text-gray">
               <span>Shipping</span>
-              <span>{shipping === 0 ? "Free" : `$${shipping}`}</span>
+              <span>{shippingCost === 0 ? "Free" : `$${shippingCost}`}</span>
             </div>
+
+            {discount?.type === "FREE_SHIPPING" && (
+              <p className="text-xs text-green-400 flex items-center gap-1">
+                <Check className="w-3 h-3" />
+                Free shipping applied!
+              </p>
+            )}
+
             <div className="flex justify-between text-ivory font-display text-xl pt-4 border-t border-white/10">
               <span>Total</span>
-              <span className="text-gold">${total.toFixed(0)}</span>
+              <span className="text-gold">${finalTotal.toFixed(0)}</span>
             </div>
           </div>
         </div>
