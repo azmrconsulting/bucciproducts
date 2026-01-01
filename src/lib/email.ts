@@ -416,3 +416,105 @@ export async function sendAdminOrderNotification(order: OrderEmailData) {
     return { success: false, error };
   }
 }
+
+interface ContactFormData {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+export async function sendContactEmail(formData: ContactFormData) {
+  try {
+    const client = getResendClient();
+    const { data, error } = await client.emails.send({
+      from: process.env.EMAIL_FROM || 'Bucci Products <noreply@bucciproducts.com>',
+      to: adminEmail,
+      replyTo: formData.email,
+      subject: `Contact Form: ${formData.subject} - ${formData.name}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>New Contact Form Submission</title>
+          </head>
+          <body style="margin: 0; padding: 0; background-color: #0a0a0a; font-family: Georgia, 'Times New Roman', serif;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0a0a0a;">
+              <tr>
+                <td align="center" style="padding: 40px 20px;">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 500px;">
+                    <!-- Logo -->
+                    <tr>
+                      <td align="center" style="padding-bottom: 30px;">
+                        <span style="font-size: 24px; font-weight: 600; letter-spacing: 0.25em; color: #c9a962;">BUCCI</span>
+                        <span style="font-size: 10px; letter-spacing: 0.2em; color: rgba(245, 240, 232, 0.6);"> CONTACT</span>
+                      </td>
+                    </tr>
+
+                    <!-- Card -->
+                    <tr>
+                      <td style="background-color: #0a0a0a; border: 1px solid rgba(201, 169, 98, 0.3); padding: 30px;">
+                        <h1 style="margin: 0 0 20px 0; font-size: 20px; font-weight: normal; color: #c9a962;">
+                          New Contact Form Submission
+                        </h1>
+
+                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 20px;">
+                          <tr>
+                            <td style="padding: 8px 0; color: #888888; font-size: 13px; width: 80px;">From:</td>
+                            <td style="padding: 8px 0; color: #f5f0e8; font-size: 13px;">${formData.name}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 8px 0; color: #888888; font-size: 13px;">Email:</td>
+                            <td style="padding: 8px 0; color: #f5f0e8; font-size: 13px;">${formData.email}</td>
+                          </tr>
+                          <tr>
+                            <td style="padding: 8px 0; color: #888888; font-size: 13px;">Subject:</td>
+                            <td style="padding: 8px 0; color: #c9a962; font-size: 13px;">${formData.subject}</td>
+                          </tr>
+                        </table>
+
+                        <div style="height: 1px; background-color: rgba(255, 255, 255, 0.1); margin: 20px 0;"></div>
+
+                        <p style="margin: 0 0 10px 0; font-size: 12px; color: #888888; text-transform: uppercase; letter-spacing: 0.1em;">Message:</p>
+                        <p style="margin: 0; font-size: 14px; color: #f5f0e8; line-height: 1.6; white-space: pre-wrap;">
+                          ${formData.message}
+                        </p>
+
+                        <div style="height: 1px; background-color: rgba(255, 255, 255, 0.1); margin: 20px 0;"></div>
+
+                        <p style="margin: 0; font-size: 12px; color: #888888;">
+                          Reply directly to this email to respond to ${formData.name}.
+                        </p>
+                      </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                      <td align="center" style="padding-top: 20px;">
+                        <p style="margin: 0; font-size: 11px; color: #555555;">
+                          This is an automated notification from Bucci Products
+                        </p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error('Failed to send contact email:', error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error sending contact email:', error);
+    return { success: false, error };
+  }
+}
