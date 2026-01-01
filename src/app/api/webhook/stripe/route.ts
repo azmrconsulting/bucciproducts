@@ -135,6 +135,13 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
   }).shipping_details;
   const customerDetails = fullSession.customer_details;
 
+  // Debug logging to see what Stripe is returning
+  console.log('=== STRIPE SESSION DEBUG ===');
+  console.log('Full session shipping_details:', JSON.stringify(shippingDetails, null, 2));
+  console.log('Full session customer_details:', JSON.stringify(customerDetails, null, 2));
+  console.log('Full session keys:', Object.keys(fullSession));
+  console.log('============================');
+
   const shippingAddress = shippingDetails?.address
     ? {
         name: shippingDetails.name || "",
@@ -158,6 +165,9 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
         country: customerDetails.address.country || "",
       }
     : shippingAddress;
+
+  console.log('Constructed shippingAddress:', JSON.stringify(shippingAddress, null, 2));
+  console.log('Constructed billingAddress:', JSON.stringify(billingAddress, null, 2));
 
   // Create order
   const order = await prisma.order.create({
