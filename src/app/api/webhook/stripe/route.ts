@@ -70,9 +70,15 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
-  const cartId = session.metadata?.cartId;
-  const sessionId = session.metadata?.sessionId;
-  const discountCodeId = session.metadata?.discountCodeId;
+  // Retrieve the full session from Stripe to get shipping details
+  // The webhook event doesn't include all data by default
+  const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
+    expand: ['line_items', 'customer_details', 'shipping_details'],
+  });
+
+  const cartId = fullSession.metadata?.cartId;
+  const sessionId = fullSession.metadata?.sessionId;
+  const discountCodeId = fullSession.metadata?.discountCodeId;
 
   if (!cartId) {
     console.error("No cartId in checkout session metadata");
@@ -103,21 +109,33 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
 
   // Get discount amount from Stripe session if applied
   let discountCents = 0;
-  if (session.total_details?.amount_discount) {
-    discountCents = session.total_details.amount_discount;
+  if (fullSession.total_details?.amount_discount) {
+    discountCents = fullSession.total_details.amount_discount;
   }
 
   const shippingCents = subtotalCents >= 7500 ? 0 : 800;
   const taxCents = 0; // Add tax calculation if needed
-  const totalCents = session.amount_total || (subtotalCents - discountCents + shippingCents + taxCents);
+  const totalCents = fullSession.amount_total || (subtotalCents - discountCents + shippingCents + taxCents);
 
   // Generate order number
   const orderNumber = `BUCCI-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
 
-  // Get shipping address from Stripe session
-  // Use type assertion for shipping details since it may not be in all API versions
-  const shippingDetails = (session as { shipping_details?: { name?: string; address?: { line1?: string; line2?: string; city?: string; state?: string; postal_code?: string; country?: string } } }).shipping_details;
-  const customerDetails = session.customer_details;
+  // Get shipping address from the full session (expanded data)
+  // Use type assertion since shipping_details is not in all Stripe type definitions
+  const shippingDetails = (fullSession as unknown as {
+    shipping_details?: {
+      name?: string;
+      address?: {
+        line1?: string;
+        line2?: string;
+        city?: string;
+        state?: string;
+        postal_code?: string;
+        country?: string;
+      };
+    };
+  }).shipping_details;
+  const customerDetails = fullSession.customer_details;
 
   const shippingAddress = shippingDetails?.address
     ? {
@@ -155,7 +173,7 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
       totalCents,
       shippingAddress,
       billingAddress,
-      stripePaymentIntentId: session.payment_intent as string,
+      stripePaymentIntentId: fullSession.payment_intent as string,
       discountCodeId: discountCodeId || null,
       items: {
         create: cart.items
