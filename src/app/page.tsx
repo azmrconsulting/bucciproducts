@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Check, Star, Mail, Instagram, Send } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -187,36 +188,14 @@ export default function HomePage() {
           <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] sm:w-[500px] h-[400px] sm:h-[500px] border border-gold/10 rounded-full animate-pulse" />
 
           {/* Product Showcase */}
-          <div className="relative w-[240px] h-[260px] sm:w-[320px] sm:h-[360px] lg:w-[350px] lg:h-[400px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] flex items-center justify-center">
-            {/* Bottles */}
-            <div className="flex items-end justify-center gap-3 sm:gap-6 lg:gap-8 p-4 sm:p-8 lg:p-10">
-              {/* Bottle 1 */}
-              <div className="flex flex-col items-center animate-fadeInUp opacity-0 [animation-delay:1.4s]">
-                <div className="w-[30px] h-[15px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px]" />
-                <div className="w-[50px] h-[100px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-[5px] flex items-center justify-center">
-                  <span className="font-display text-2xl text-gold/80">B</span>
-                </div>
-              </div>
-
-              {/* Bottle 2 - Tall with pump */}
-              <div className="flex flex-col items-center animate-fadeInUp opacity-0 [animation-delay:1.6s]">
-                <div className="w-[20px] h-[30px] rounded-[3px] relative">
-                  <div className="absolute -top-[15px] left-1/2 -translate-x-1/2 w-[6px] h-[20px] bg-gold rounded-[3px]" />
-                </div>
-                <div className="w-[45px] h-[140px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-[5px] flex items-center justify-center">
-                  <span className="font-display text-2xl text-gold/80">B</span>
-                </div>
-              </div>
-
-              {/* Bottle 3 - Wide */}
-              <div className="flex flex-col items-center animate-fadeInUp opacity-0 [animation-delay:1.8s]">
-                <div className="w-[30px] h-[15px] bg-gradient-to-b from-gold to-gold-dark rounded-t-[3px]" />
-                <div className="w-[70px] h-[80px] bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-lg flex items-center justify-center">
-                  <span className="font-display text-2xl text-gold/80">B</span>
-                </div>
-              </div>
-            </div>
-
+          <div className="relative w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] lg:w-[450px] lg:h-[450px] border border-gold animate-fadeIn opacity-0 [animation-delay:1.2s] overflow-hidden">
+            <Image
+              src="/images/bucci-hair-products-black-gold.webp"
+              alt="Bucci Hair Products Collection"
+              fill
+              className="object-contain p-4"
+              priority
+            />
             {/* Glow Effect */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[250px] sm:w-[350px] lg:w-[400px] h-[250px] sm:h-[350px] lg:h-[400px] bg-gold/15 rounded-full blur-[60px] -z-10" />
           </div>
@@ -375,15 +354,15 @@ export default function HomePage() {
 
             {/* Visual */}
             <div className="order-1 lg:order-2 flex items-center justify-center">
-              <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[400px] lg:h-[400px]">
-                {/* Floating Set Items */}
-                <div className="absolute w-[35px] sm:w-[45px] lg:w-[50px] h-[85px] sm:h-[100px] lg:h-[120px] top-1/2 left-[20%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float" />
-                <div className="absolute w-[32px] sm:w-[40px] lg:w-[45px] h-[70px] sm:h-[85px] lg:h-[100px] top-[40%] left-[38%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float [animation-delay:0.5s]" />
-                <div className="absolute w-[38px] sm:w-[48px] lg:w-[55px] h-[65px] sm:h-[75px] lg:h-[90px] top-[55%] left-[55%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded-md animate-float [animation-delay:1s]" />
-                <div className="absolute w-[28px] sm:w-[35px] lg:w-[40px] h-[50px] sm:h-[60px] lg:h-[70px] top-[45%] left-[72%] -translate-y-1/2 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a] border border-gold/30 rounded animate-float [animation-delay:1.5s]" />
-
+              <div className="relative w-[280px] h-[280px] sm:w-[350px] sm:h-[350px] lg:w-[450px] lg:h-[450px]">
+                <Image
+                  src="/images/bucci-hair-products-black-gold.webp"
+                  alt="Bucci Signature Set - Complete Hair Care Collection"
+                  fill
+                  className="object-contain"
+                />
                 {/* Glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] sm:w-[250px] lg:w-[300px] h-[200px] sm:h-[250px] lg:h-[300px] bg-gold/15 rounded-full blur-[50px]" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] sm:w-[250px] lg:w-[300px] h-[200px] sm:h-[250px] lg:h-[300px] bg-gold/15 rounded-full blur-[50px] -z-10" />
               </div>
             </div>
           </div>
