@@ -70,11 +70,9 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
-  // Retrieve the full session from Stripe to get shipping details
+  // Retrieve the full session from Stripe to get all details
   // The webhook event doesn't include all data by default
-  const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
-    expand: ['line_items', 'customer_details', 'shipping_details'],
-  });
+  const fullSession = await stripe.checkout.sessions.retrieve(session.id);
 
   const cartId = fullSession.metadata?.cartId;
   const sessionId = fullSession.metadata?.sessionId;
