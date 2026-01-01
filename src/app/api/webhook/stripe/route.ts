@@ -135,13 +135,8 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
   }).shipping_details;
   const customerDetails = fullSession.customer_details;
 
-  // Debug logging to see what Stripe is returning
-  console.log('=== STRIPE SESSION DEBUG ===');
-  console.log('Full session shipping_details:', JSON.stringify(shippingDetails, null, 2));
-  console.log('Full session customer_details:', JSON.stringify(customerDetails, null, 2));
-  console.log('Full session keys:', Object.keys(fullSession));
-  console.log('============================');
-
+  // Build shipping address - try shipping_details first, fall back to customer_details
+  // (When "Billing same as shipping" is checked, address is in customer_details)
   const shippingAddress = shippingDetails?.address
     ? {
         name: shippingDetails.name || "",
@@ -151,6 +146,16 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
         state: shippingDetails.address.state || "",
         postalCode: shippingDetails.address.postal_code || "",
         country: shippingDetails.address.country || "",
+      }
+    : customerDetails?.address
+    ? {
+        name: customerDetails.name || "",
+        line1: customerDetails.address.line1 || "",
+        line2: customerDetails.address.line2 || "",
+        city: customerDetails.address.city || "",
+        state: customerDetails.address.state || "",
+        postalCode: customerDetails.address.postal_code || "",
+        country: customerDetails.address.country || "",
       }
     : {};
 
@@ -165,9 +170,6 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
         country: customerDetails.address.country || "",
       }
     : shippingAddress;
-
-  console.log('Constructed shippingAddress:', JSON.stringify(shippingAddress, null, 2));
-  console.log('Constructed billingAddress:', JSON.stringify(billingAddress, null, 2));
 
   // Create order
   const order = await prisma.order.create({
