@@ -268,7 +268,7 @@ export default async function OrderDetailPage({
       <div className="card p-6 text-center">
         <p className="text-gray text-sm">
           Need help with your order?{' '}
-          <Link href="/contact" className="text-gold hover:text-gold-light">
+          <Link href="/#contact" className="text-gold hover:text-gold-light">
             Contact us
           </Link>
         </p>

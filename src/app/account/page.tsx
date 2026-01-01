@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { Package, MapPin, ArrowRight } from 'lucide-react';
 
-async function getAccountData(userId: string) {
+async function getAccountData(userId: string, userEmail?: string | null) {
   const [user, recentOrders, addresses] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
@@ -18,7 +18,12 @@ async function getAccountData(userId: string) {
       },
     }),
     prisma.order.findMany({
-      where: { userId },
+      where: {
+        OR: [
+          { userId },
+          ...(userEmail ? [{ email: userEmail }] : []),
+        ],
+      },
       orderBy: { createdAt: 'desc' },
       take: 3,
       select: {
@@ -45,7 +50,7 @@ export default async function AccountPage() {
     return null;
   }
 
-  const { user, recentOrders, addresses } = await getAccountData(session.user.id);
+  const { user, recentOrders, addresses } = await getAccountData(session.user.id, session.user.email);
 
   const formatCurrency = (cents: number) => {
     return new Intl.NumberFormat('en-US', {
