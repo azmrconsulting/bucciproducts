@@ -16,9 +16,13 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(
-    error === "CredentialsSignin" ? "Invalid email or password" : ""
-  );
+  const getInitialError = () => {
+    if (error === "CredentialsSignin") return "Invalid email or password";
+    if (error === "AdminAccessRequired") return "Admin access required. Please sign in with an admin account.";
+    return "";
+  };
+
+  const [errorMessage, setErrorMessage] = useState(getInitialError());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
