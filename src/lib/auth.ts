@@ -3,10 +3,14 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
+import { verifyTOTPCode, decryptSecret, verifyBackupCode } from "./mfa";
 
 // SECURITY: Account lockout configuration
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MINUTES = 30;
+
+// Special error codes for MFA
+export const MFA_REQUIRED_ERROR = "MFA_REQUIRED";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
@@ -16,6 +20,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        mfaCode: { label: "MFA Code", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -75,6 +80,39 @@ export const authOptions: NextAuthOptions = {
           }
 
           throw new Error("Invalid credentials");
+        }
+
+        // SECURITY: Check MFA requirement
+        if (user.mfaEnabled && user.mfaSecret) {
+          const mfaCode = credentials.mfaCode;
+
+          // If MFA is enabled but no code provided, throw special error
+          if (!mfaCode) {
+            throw new Error(MFA_REQUIRED_ERROR);
+          }
+
+          // Verify MFA code (TOTP or backup code)
+          const secret = decryptSecret(user.mfaSecret);
+          const isTotpValid = verifyTOTPCode(secret, mfaCode, user.email);
+
+          if (!isTotpValid) {
+            // Try backup code
+            const backupIndex = verifyBackupCode(mfaCode, user.mfaBackupCodes);
+            if (backupIndex >= 0) {
+              // Remove used backup code
+              const updatedCodes = [...user.mfaBackupCodes];
+              updatedCodes.splice(backupIndex, 1);
+              await prisma.user.update({
+                where: { id: user.id },
+                data: { mfaBackupCodes: updatedCodes },
+              });
+              console.log(
+                `[SECURITY] Backup code used for login: ${user.email} (${updatedCodes.length} remaining)`
+              );
+            } else {
+              throw new Error("Invalid verification code");
+            }
+          }
         }
 
         // SECURITY: Reset failed attempts on successful login

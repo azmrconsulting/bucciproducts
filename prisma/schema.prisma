@@ -30,6 +30,11 @@ model User {
   failedLoginAttempts Int       @default(0)
   lockedUntil         DateTime?
 
+  // Security: Multi-factor authentication (TOTP)
+  mfaEnabled     Boolean   @default(false)
+  mfaSecret      String?   // Encrypted TOTP secret
+  mfaBackupCodes String[]  // Hashed backup codes
+
   accounts  Account[]
   sessions  Session[]
   addresses Address[]
