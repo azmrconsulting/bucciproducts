@@ -1,14 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Eye, EyeOff, ArrowRight, Loader2, Check } from "lucide-react";
+import { Eye, EyeOff, ArrowRight, Loader2, Check, Mail } from "lucide-react";
+import Turnstile from "@/components/Turnstile";
 
 export default function RegisterPage() {
-  const router = useRouter();
-
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -19,6 +16,8 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [registrationComplete, setRegistrationComplete] = useState(false);
 
   const passwordRequirements = [
     { label: "At least 8 characters", met: formData.password.length >= 8 },
@@ -60,6 +59,7 @@ export default function RegisterPage() {
           lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
+          turnstileToken: turnstileToken,
         }),
       });
 
@@ -67,28 +67,61 @@ export default function RegisterPage() {
 
       if (!response.ok) {
         setErrorMessage(data.error || "Registration failed");
+        setTurnstileToken(null); // Reset token on error
         setIsLoading(false);
         return;
       }
 
-      // Auto sign in after registration
-      const signInResult = await signIn("credentials", {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      });
-
-      if (signInResult?.error) {
-        router.push("/auth/login");
-      } else {
-        router.push("/");
-        router.refresh();
-      }
+      // Show success message - user needs to verify email
+      setRegistrationComplete(true);
     } catch {
       setErrorMessage("Something went wrong. Please try again.");
+      setTurnstileToken(null);
       setIsLoading(false);
     }
   };
+
+  // Show success message after registration
+  if (registrationComplete) {
+    return (
+      <main className="min-h-screen bg-black flex items-center justify-center px-4 sm:px-6 py-12 sm:py-20">
+        <div className="geo-pattern" />
+        <div className="w-full max-w-md relative z-10">
+          <div className="text-center mb-8 sm:mb-12">
+            <Link href="/" className="inline-block">
+              <span className="font-display text-2xl sm:text-3xl font-semibold tracking-[0.25em] sm:tracking-[0.3em] text-gold">
+                BUCCI
+              </span>
+              <span className="block font-display text-[0.6rem] sm:text-[0.65rem] tracking-[0.4em] sm:tracking-[0.5em] text-ivory/60 mt-1">
+                HAIR CARE
+              </span>
+            </Link>
+          </div>
+          <div className="card p-5 sm:p-8 md:p-10 text-center">
+            <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
+              <Mail className="w-8 h-8 text-gold" />
+            </div>
+            <h1 className="font-display text-xl sm:text-2xl text-ivory mb-3">
+              Check Your Email
+            </h1>
+            <p className="text-gray text-sm mb-2">
+              We&apos;ve sent a verification link to:
+            </p>
+            <p className="text-gold text-sm font-medium mb-6">
+              {formData.email}
+            </p>
+            <p className="text-gray text-sm mb-6">
+              Please click the link in the email to verify your account and complete registration.
+            </p>
+            <Link href="/auth/login" className="btn btn-primary w-full justify-center">
+              Go to Sign In
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-black flex items-center justify-center px-4 sm:px-6 py-12 sm:py-20">
@@ -247,6 +280,16 @@ export default function RegisterPage() {
               {formData.confirmPassword && formData.password !== formData.confirmPassword && (
                 <p className="text-red-400 text-xs mt-2">Passwords do not match</p>
               )}
+            </div>
+
+            {/* CAPTCHA Widget */}
+            <div className="mt-4">
+              <Turnstile
+                onVerify={setTurnstileToken}
+                onExpire={() => setTurnstileToken(null)}
+                onError={() => setTurnstileToken(null)}
+                theme="dark"
+              />
             </div>
 
             <button

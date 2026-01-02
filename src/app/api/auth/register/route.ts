@@ -5,6 +5,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp, getRateLimitHeaders, rateLimitConfigs } from "@/lib/rate-limit";
 import { sendEmailVerificationEmail } from "@/lib/email";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 // Common weak passwords to block
 const commonPasswords = ['password', '12345678', 'password123', 'admin123', 'qwerty123', 'letmein', 'welcome'];
@@ -24,6 +25,7 @@ const registerSchema = z.object({
     ),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
+  turnstileToken: z.string().optional(), // CAPTCHA token (optional if not configured)
 });
 
 export async function POST(request: NextRequest) {
@@ -44,6 +46,15 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const validatedData = registerSchema.parse(body);
+
+    // SECURITY: Verify CAPTCHA token
+    const captchaResult = await verifyTurnstileToken(validatedData.turnstileToken);
+    if (!captchaResult.success) {
+      return NextResponse.json(
+        { error: captchaResult.error || "CAPTCHA verification failed" },
+        { status: 400 }
+      );
+    }
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
