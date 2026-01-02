@@ -20,9 +20,11 @@ export default function RegisterPage() {
   const [registrationComplete, setRegistrationComplete] = useState(false);
 
   const passwordRequirements = [
-    { label: "At least 8 characters", met: formData.password.length >= 8 },
-    { label: "Contains a number", met: /\d/.test(formData.password) },
+    { label: "At least 10 characters", met: formData.password.length >= 10 },
     { label: "Contains uppercase", met: /[A-Z]/.test(formData.password) },
+    { label: "Contains lowercase", met: /[a-z]/.test(formData.password) },
+    { label: "Contains a number", met: /\d/.test(formData.password) },
+    { label: "Contains special character", met: /[^A-Za-z0-9]/.test(formData.password) },
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,8 +46,8 @@ export default function RegisterPage() {
     }
 
     // Validate password strength
-    if (formData.password.length < 8) {
-      setErrorMessage("Password must be at least 8 characters");
+    if (formData.password.length < 10) {
+      setErrorMessage("Password must be at least 10 characters");
       setIsLoading(false);
       return;
     }

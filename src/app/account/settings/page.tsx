@@ -122,10 +122,11 @@ export default function SettingsPage() {
   };
 
   const passwordRequirements = [
-    { met: newPassword.length >= 8, text: 'At least 8 characters' },
+    { met: newPassword.length >= 10, text: 'At least 10 characters' },
     { met: /[A-Z]/.test(newPassword), text: 'One uppercase letter' },
     { met: /[a-z]/.test(newPassword), text: 'One lowercase letter' },
     { met: /[0-9]/.test(newPassword), text: 'One number' },
+    { met: /[^A-Za-z0-9]/.test(newPassword), text: 'One special character' },
   ];
 
   return (

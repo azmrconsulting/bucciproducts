@@ -17,14 +17,15 @@ function ResetPasswordForm() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Password validation
-  const hasMinLength = password.length >= 8;
+  // Password validation (aligned with API requirements)
+  const hasMinLength = password.length >= 10;
   const hasUppercase = /[A-Z]/.test(password);
   const hasLowercase = /[a-z]/.test(password);
   const hasNumber = /[0-9]/.test(password);
+  const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
   const passwordsMatch = password === confirmPassword && password.length > 0;
 
-  const isPasswordValid = hasMinLength && hasUppercase && hasLowercase && hasNumber;
+  const isPasswordValid = hasMinLength && hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -193,10 +194,11 @@ function ResetPasswordForm() {
                   <div className="mt-3 space-y-1.5">
                     <p className="text-xs text-gray">Password must have:</p>
                     <div className="grid grid-cols-2 gap-1.5">
-                      <RequirementItem met={hasMinLength} text="8+ characters" />
+                      <RequirementItem met={hasMinLength} text="10+ characters" />
                       <RequirementItem met={hasUppercase} text="Uppercase letter" />
                       <RequirementItem met={hasLowercase} text="Lowercase letter" />
                       <RequirementItem met={hasNumber} text="Number" />
+                      <RequirementItem met={hasSpecialChar} text="Special character" />
                     </div>
                   </div>
                 </div>
