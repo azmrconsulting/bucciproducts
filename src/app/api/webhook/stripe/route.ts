@@ -205,13 +205,24 @@ async function handleCheckoutComplete(session: Stripe.Checkout.Session) {
 
   console.log(`Order created: ${order.orderNumber}`);
 
-  // Update discount code usage count if used
+  // SECURITY: Atomically update discount code usage with race condition protection
   if (discountCodeId) {
-    await prisma.discountCode.update({
-      where: { id: discountCodeId },
-      data: { currentUses: { increment: 1 } },
-    });
-    console.log(`Discount code usage incremented: ${discountCodeId}`);
+    // Use raw query for atomic conditional update to prevent race conditions
+    // This ensures we never exceed maxUses even with concurrent requests
+    const result = await prisma.$executeRaw`
+      UPDATE "DiscountCode"
+      SET "currentUses" = "currentUses" + 1
+      WHERE id = ${discountCodeId}
+        AND ("maxUses" IS NULL OR "currentUses" < "maxUses")
+    `;
+
+    if (result > 0) {
+      console.log(`Discount code usage incremented: ${discountCodeId}`);
+    } else {
+      // Code was already at max uses - this shouldn't happen normally
+      // but protects against race conditions
+      console.warn(`Discount code ${discountCodeId} at max uses - race condition prevented`);
+    }
   }
 
   // Prepare email data

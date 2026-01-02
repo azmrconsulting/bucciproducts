@@ -26,6 +26,10 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  // Security: Account lockout after failed login attempts
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+
   accounts  Account[]
   sessions  Session[]
   addresses Address[]

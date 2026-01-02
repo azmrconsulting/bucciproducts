@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp, getRateLimitHeaders, rateLimitConfigs } from "@/lib/rate-limit";
+import { sendEmailVerificationEmail } from "@/lib/email";
 
 // Common weak passwords to block
 const commonPasswords = ['password', '12345678', 'password123', 'admin123', 'qwerty123', 'letmein', 'welcome'];
@@ -59,13 +61,14 @@ export async function POST(request: NextRequest) {
     // Hash password
     const passwordHash = await bcrypt.hash(validatedData.password, 12);
 
-    // Create user
+    // Create user (email not verified yet)
     const user = await prisma.user.create({
       data: {
-        email: validatedData.email,
+        email: validatedData.email.toLowerCase(),
         passwordHash,
         firstName: validatedData.firstName,
         lastName: validatedData.lastName,
+        emailVerified: null, // Not verified yet
       },
       select: {
         id: true,
@@ -75,8 +78,34 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // SECURITY: Generate email verification token
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto.createHash("sha256").update(verificationToken).digest("hex");
+
+    // Token expires in 24 hours
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    // Store the verification token
+    await prisma.verificationToken.create({
+      data: {
+        identifier: user.email,
+        token: hashedToken,
+        expires,
+      },
+    });
+
+    // Send verification email
+    const emailResult = await sendEmailVerificationEmail(user.email, verificationToken);
+    if (!emailResult.success) {
+      console.error("Failed to send verification email:", emailResult.error);
+    }
+
     return NextResponse.json(
-      { message: "Account created successfully", user },
+      {
+        message: "Account created successfully. Please check your email to verify your account.",
+        user,
+        requiresVerification: true,
+      },
       { status: 201 }
     );
   } catch (error) {
