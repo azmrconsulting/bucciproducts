@@ -3,9 +3,22 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
+// Common weak passwords to block
+const commonPasswords = ['password', '12345678', 'password123', 'admin123', 'qwerty123', 'letmein', 'welcome'];
+
 const registerSchema = z.object({
   email: z.string().email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: z
+    .string()
+    .min(10, "Password must be at least 10 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character")
+    .refine(
+      (password) => !commonPasswords.includes(password.toLowerCase()),
+      "Password is too common. Please choose a stronger password."
+    ),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
 });
@@ -21,8 +34,9 @@ export async function POST(request: NextRequest) {
     });
 
     if (existingUser) {
+      // SECURITY: Use generic error message to prevent email enumeration
       return NextResponse.json(
-        { error: "An account with this email already exists" },
+        { error: "Unable to create account. Please try again or use a different email." },
         { status: 400 }
       );
     }

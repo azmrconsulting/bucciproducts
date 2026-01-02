@@ -4,9 +4,22 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 
+// Common weak passwords to block
+const commonPasswords = ['password', '12345678', 'password123', 'admin123', 'qwerty123', 'letmein', 'welcome'];
+
 const resetPasswordSchema = z.object({
   token: z.string().min(1, 'Token is required'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: z
+    .string()
+    .min(10, 'Password must be at least 10 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character')
+    .refine(
+      (password) => !commonPasswords.includes(password.toLowerCase()),
+      'Password is too common. Please choose a stronger password.'
+    ),
 });
 
 export async function POST(request: NextRequest) {

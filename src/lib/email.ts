@@ -11,7 +11,7 @@ function getResendClient() {
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-const adminEmail = process.env.ADMIN_EMAIL || 'meroaangeljunk@gmail.com';
+const adminEmail = process.env.ADMIN_EMAIL || 'admin@bucciproducts.com';
 
 // Types for order emails
 interface OrderItem {

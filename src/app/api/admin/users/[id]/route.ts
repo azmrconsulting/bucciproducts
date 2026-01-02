@@ -27,16 +27,27 @@ export async function PATCH(
     const body = await request.json();
     const validatedData = updateUserSchema.parse(body);
 
-    const user = await prisma.user.findUnique({
+    const targetUser = await prisma.user.findUnique({
       where: { id: id },
     });
 
-    if (!user) {
+    if (!targetUser) {
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       );
     }
+
+    // SECURITY: Prevent self-demotion
+    if (targetUser.id === session.user.id && validatedData.role === 'CUSTOMER') {
+      return NextResponse.json(
+        { error: 'You cannot demote yourself. Ask another admin.' },
+        { status: 403 }
+      );
+    }
+
+    // SECURITY: Audit log for role changes
+    console.log(`[AUDIT] Admin ${session.user.email} changed ${targetUser.email} role from ${targetUser.role} to ${validatedData.role} at ${new Date().toISOString()}`);
 
     const updatedUser = await prisma.user.update({
       where: { id: id },

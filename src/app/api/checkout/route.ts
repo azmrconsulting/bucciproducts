@@ -29,6 +29,47 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
 
+    // SECURITY: Validate cart items before checkout
+    for (const item of cart.items) {
+      // Validate quantity is positive and reasonable
+      if (item.quantity <= 0 || item.quantity > 100) {
+        return NextResponse.json(
+          { error: "Invalid item quantity" },
+          { status: 400 }
+        );
+      }
+
+      // Verify product exists and is active
+      if (!item.product) {
+        return NextResponse.json(
+          { error: "One or more products not found" },
+          { status: 400 }
+        );
+      }
+
+      if (!item.product.isActive) {
+        return NextResponse.json(
+          { error: `${item.product.name} is no longer available` },
+          { status: 400 }
+        );
+      }
+
+      // Check inventory availability
+      const inventory = await prisma.inventory.findFirst({
+        where: { productId: item.productId },
+      });
+
+      if (inventory && !inventory.allowBackorder) {
+        const availableQuantity = inventory.quantity - inventory.reservedQuantity;
+        if (item.quantity > availableQuantity) {
+          return NextResponse.json(
+            { error: `Insufficient stock for ${item.product.name}. Only ${availableQuantity} available.` },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     // Get request body
     const body = await request.json().catch(() => ({}));
     const customerEmail = body.email;
