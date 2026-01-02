@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Send } from 'lucide-react';
+import Turnstile from '@/components/Turnstile';
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export default function ContactForm() {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [status, setStatus] = useState<{
     type: 'success' | 'error' | null;
     message: string;
@@ -36,7 +38,10 @@ export default function ContactForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          turnstileToken,
+        }),
       });
 
       const data = await response.json();
@@ -57,7 +62,9 @@ export default function ContactForm() {
         subject: 'general',
         message: '',
       });
+      setTurnstileToken(null);
     } catch (error) {
+      setTurnstileToken(null);
       setStatus({
         type: 'error',
         message: error instanceof Error ? error.message : 'Failed to send message. Please try again.',
@@ -147,6 +154,14 @@ export default function ContactForm() {
           className="form-textarea"
         />
       </div>
+
+      {/* CAPTCHA Widget */}
+      <Turnstile
+        onVerify={setTurnstileToken}
+        onExpire={() => setTurnstileToken(null)}
+        onError={() => setTurnstileToken(null)}
+        theme="dark"
+      />
 
       <button
         type="submit"
