@@ -3,6 +3,7 @@ import { z } from 'zod';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+import { checkRateLimit, getClientIp, getRateLimitHeaders, rateLimitConfigs } from '@/lib/rate-limit';
 
 // Common weak passwords to block
 const commonPasswords = ['password', '12345678', 'password123', 'admin123', 'qwerty123', 'letmein', 'welcome'];
@@ -24,6 +25,20 @@ const resetPasswordSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Rate limit password reset attempts
+    const clientIp = getClientIp(request);
+    const rateLimit = checkRateLimit(`reset-password:${clientIp}`, rateLimitConfigs.resetPassword);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: 'Too many password reset attempts. Please try again later.' },
+        {
+          status: 429,
+          headers: getRateLimitHeaders(rateLimit.remaining, rateLimit.resetTime, rateLimitConfigs.resetPassword.maxRequests),
+        }
+      );
+    }
+
     const body = await request.json();
     const { token, password } = resetPasswordSchema.parse(body);
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, getClientIp, getRateLimitHeaders, rateLimitConfigs } from "@/lib/rate-limit";
 
 // Common weak passwords to block
 const commonPasswords = ['password', '12345678', 'password123', 'admin123', 'qwerty123', 'letmein', 'welcome'];
@@ -25,6 +26,20 @@ const registerSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Rate limit registration to prevent mass account creation
+    const clientIp = getClientIp(request);
+    const rateLimit = checkRateLimit(`register:${clientIp}`, rateLimitConfigs.register);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Too many registration attempts. Please try again later." },
+        {
+          status: 429,
+          headers: getRateLimitHeaders(rateLimit.remaining, rateLimit.resetTime, rateLimitConfigs.register.maxRequests),
+        }
+      );
+    }
+
     const body = await request.json();
     const validatedData = registerSchema.parse(body);
 
