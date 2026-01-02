@@ -77,10 +77,16 @@ export async function POST(request: NextRequest) {
     // Hash the new password
     const passwordHash = await bcrypt.hash(password, 12);
 
-    // Update user's password
+    // SECURITY: Update password and set passwordChangedAt to invalidate existing sessions
     await prisma.user.update({
       where: { id: user.id },
-      data: { passwordHash },
+      data: {
+        passwordHash,
+        passwordChangedAt: new Date(),
+        // Also reset lockout on successful password reset
+        failedLoginAttempts: 0,
+        lockedUntil: null,
+      },
     });
 
     // Delete the used token

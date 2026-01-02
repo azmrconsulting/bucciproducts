@@ -61,11 +61,13 @@ export async function GET() {
       items: formatCartItems(cart),
     });
 
+    // SECURITY: Strict cookie settings to prevent session hijacking
     response.cookies.set("cart_session", sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days - SECURITY: reduced session duration
+      sameSite: "strict", // SECURITY: Strict to prevent CSRF attacks
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
     });
 
     return response;
@@ -87,6 +89,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // SECURITY: Validate quantity to prevent manipulation
+    const parsedQuantity = parseInt(quantity);
+    if (isNaN(parsedQuantity) || parsedQuantity < 1 || parsedQuantity > 100) {
+      return NextResponse.json(
+        { error: "Quantity must be between 1 and 100" },
+        { status: 400 }
+      );
+    }
+
     const { cart, sessionId } = await getOrCreateCart();
 
     // Check if product exists
@@ -102,10 +113,11 @@ export async function POST(request: NextRequest) {
     const existingItem = cart.items.find((item) => item.productId === productId);
 
     if (existingItem) {
-      // Update quantity
+      // Update quantity (cap at 100)
+      const newQuantity = Math.min(existingItem.quantity + parsedQuantity, 100);
       await prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity: existingItem.quantity + quantity },
+        data: { quantity: newQuantity },
       });
     } else {
       // Add new item
@@ -113,7 +125,7 @@ export async function POST(request: NextRequest) {
         data: {
           cartId: cart.id,
           productId,
-          quantity,
+          quantity: parsedQuantity,
         },
       });
     }
@@ -137,8 +149,9 @@ export async function POST(request: NextRequest) {
     response.cookies.set("cart_session", sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      sameSite: "strict",
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/",
     });
 
     return response;
@@ -160,6 +173,15 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    // SECURITY: Validate quantity
+    const parsedQuantity = parseInt(quantity);
+    if (isNaN(parsedQuantity) || parsedQuantity < 0 || parsedQuantity > 100) {
+      return NextResponse.json(
+        { error: "Quantity must be between 0 and 100" },
+        { status: 400 }
+      );
+    }
+
     const { cart, sessionId } = await getOrCreateCart();
 
     // Verify item belongs to this cart
@@ -168,12 +190,12 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "Item not found in cart" }, { status: 404 });
     }
 
-    if (quantity <= 0) {
+    if (parsedQuantity <= 0) {
       await prisma.cartItem.delete({ where: { id: itemId } });
     } else {
       await prisma.cartItem.update({
         where: { id: itemId },
-        data: { quantity },
+        data: { quantity: parsedQuantity },
       });
     }
 
@@ -196,8 +218,9 @@ export async function PATCH(request: NextRequest) {
     response.cookies.set("cart_session", sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;
@@ -251,8 +274,9 @@ export async function DELETE(request: NextRequest) {
     response.cookies.set("cart_session", sessionId, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 30,
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;

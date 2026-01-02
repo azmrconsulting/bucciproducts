@@ -137,20 +137,31 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
+    maxAge: 30 * 60, // 30 minutes - SECURITY: Short session lifetime
+    updateAge: 5 * 60, // Rotate token every 5 minutes
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
       }
-      // Fetch role from database
+      // Fetch role and password change time from database
       if (token.email) {
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email },
-          select: { role: true },
+          select: { role: true, passwordChangedAt: true },
         });
         if (dbUser) {
           token.role = dbUser.role;
+
+          // SECURITY: Invalidate session if password was changed after token was issued
+          if (dbUser.passwordChangedAt && token.iat) {
+            const passwordChangedTime = Math.floor(dbUser.passwordChangedAt.getTime() / 1000);
+            if (passwordChangedTime > (token.iat as number)) {
+              // Password was changed after this token was issued - invalidate
+              return null as unknown as typeof token;
+            }
+          }
         }
       }
       return token;

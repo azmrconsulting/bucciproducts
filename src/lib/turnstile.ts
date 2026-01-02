@@ -66,8 +66,14 @@ export async function verifyTurnstileToken(
     return { success: true };
   } catch (error) {
     console.error("[CAPTCHA] Verification error:", error);
-    // On error, we allow the request through to avoid blocking legitimate users
-    // The rate limiter provides a fallback protection layer
+    // SECURITY: Fail closed in production to prevent bypass attacks
+    // In development, allow through to avoid blocking during testing
+    if (process.env.NODE_ENV === "production") {
+      return {
+        success: false,
+        error: "CAPTCHA verification temporarily unavailable. Please try again.",
+      };
+    }
     return { success: true };
   }
 }

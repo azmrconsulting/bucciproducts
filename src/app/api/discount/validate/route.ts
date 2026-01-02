@@ -1,8 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit, getClientIp, getRateLimitHeaders } from "@/lib/rate-limit";
+
+// SECURITY: Rate limit discount validation to prevent brute-forcing codes
+const discountRateLimit = { interval: 60 * 1000, maxRequests: 10 }; // 10 attempts per minute
 
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Rate limit discount code attempts
+    const clientIp = getClientIp(request);
+    const rateLimit = checkRateLimit(`discount:${clientIp}`, discountRateLimit);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Too many attempts. Please try again later." },
+        {
+          status: 429,
+          headers: getRateLimitHeaders(rateLimit.remaining, rateLimit.resetTime, discountRateLimit.maxRequests),
+        }
+      );
+    }
+
     const { code, subtotalCents } = await request.json();
 
     if (!code) {
@@ -22,17 +40,11 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    if (!discountCode) {
+    // SECURITY: Use generic error to prevent code enumeration
+    // Don't reveal whether code exists, is inactive, expired, etc.
+    if (!discountCode || !discountCode.isActive) {
       return NextResponse.json(
-        { error: "Invalid discount code" },
-        { status: 404 }
-      );
-    }
-
-    // Check if active
-    if (!discountCode.isActive) {
-      return NextResponse.json(
-        { error: "This discount code is no longer active" },
+        { error: "Invalid or expired discount code" },
         { status: 400 }
       );
     }
@@ -40,7 +52,7 @@ export async function POST(request: NextRequest) {
     // Check start date
     if (discountCode.startsAt && new Date() < discountCode.startsAt) {
       return NextResponse.json(
-        { error: "This discount code is not yet active" },
+        { error: "Invalid or expired discount code" },
         { status: 400 }
       );
     }
@@ -48,7 +60,7 @@ export async function POST(request: NextRequest) {
     // Check expiration
     if (discountCode.expiresAt && new Date() > discountCode.expiresAt) {
       return NextResponse.json(
-        { error: "This discount code has expired" },
+        { error: "Invalid or expired discount code" },
         { status: 400 }
       );
     }
@@ -56,7 +68,7 @@ export async function POST(request: NextRequest) {
     // Check max uses
     if (discountCode.maxUses && discountCode.currentUses >= discountCode.maxUses) {
       return NextResponse.json(
-        { error: "This discount code has reached its usage limit" },
+        { error: "Invalid or expired discount code" },
         { status: 400 }
       );
     }

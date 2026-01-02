@@ -5,14 +5,22 @@ import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 
+// SECURITY: Common weak passwords to block (aligned with registration)
+const commonPasswords = ['password', '12345678', 'password123', 'admin123', 'qwerty123', 'letmein', 'welcome'];
+
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
   newPassword: z
     .string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/[A-Z]/, 'Password must contain an uppercase letter')
-    .regex(/[a-z]/, 'Password must contain a lowercase letter')
-    .regex(/[0-9]/, 'Password must contain a number'),
+    .min(10, 'Password must be at least 10 characters')
+    .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+    .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+    .regex(/[0-9]/, 'Password must contain at least one number')
+    .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character')
+    .refine(
+      (password) => !commonPasswords.includes(password.toLowerCase()),
+      'Password is too common. Please choose a stronger password.'
+    ),
 });
 
 export async function PUT(request: Request) {
@@ -58,9 +66,13 @@ export async function PUT(request: Request) {
     // Hash new password and update
     const hashedPassword = await bcrypt.hash(validatedData.newPassword, 12);
 
+    // SECURITY: Set passwordChangedAt to invalidate existing sessions
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { passwordHash: hashedPassword },
+      data: {
+        passwordHash: hashedPassword,
+        passwordChangedAt: new Date(),
+      },
     });
 
     return NextResponse.json({ message: 'Password updated successfully' });
