@@ -25,7 +25,7 @@ const registerSchema = z.object({
     ),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  turnstileToken: z.string().optional(), // CAPTCHA token (optional if not configured)
+  turnstileToken: z.string().nullable().optional(), // CAPTCHA token (optional if not configured)
 });
 
 export async function POST(request: NextRequest) {
